@@ -8,7 +8,7 @@
 //var app = (function()
 //{
 // Application object.
-  var max=-100;
+//  var max=-100;
 var array=[];
 var maxRSSI = -100;
 var  maxmajor=0;
