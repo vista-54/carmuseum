@@ -73,7 +73,7 @@ function startScan()
         
             var key = beacon.uuid + ':' + beacon.major + ':' + beacon.minor;
             beacons[key] = beacon;
-            count+1;
+            count=pluginResult.beacons;
         }
     };
 
@@ -139,10 +139,13 @@ function displayBeaconList()
             else if (beacon.rssi < 0) {
                 rssiWidth = 100 + beacon.rssi;
             }
-            array.push(beacon.rssi);
+            var obj={rssi:beacon.rssi,major:beacon.major,minor:beacon.minor};
+            array.push(obj);
             array.sort();
            
-            maxRSSI=array[array.length-1];
+            maxRSSI=array.rssi[0];
+            maxmajor=array.major[0];
+            maxminor=array.minor[0];
 //            if(beacon.rssi > maxRSSI)
 //            {
 //                maxRSSI=beacon.rssi;
