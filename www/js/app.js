@@ -69,10 +69,11 @@ function startScan()
     delegate.didRangeBeaconsInRegion = function (pluginResult)
     {
         
-       alert('rssi: ' + JSON.stringify(pluginResult.beacons));
+       
 //        alert(pluginResult);
         for (var i in pluginResult.beacons)
         {
+            alert('rssi: ' + JSON.stringify(pluginResult.beacons));
 //            alert(pluginResult.beacons) 
              maxRSSI=-100;
             // Insert beacon into table of found beacons.
