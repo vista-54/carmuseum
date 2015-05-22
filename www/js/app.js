@@ -8,6 +8,9 @@
 //var app = (function()
 //{
 // Application object.
+var id={
+    iBeaconId:null
+};
 var app = {};
 //alert("start");
 // Specify your beacon 128bit UUIDs here.
@@ -144,7 +147,7 @@ function displayBeaconList()
                     + rssiWidth + '%;"></div>'
                     + '</li>'
                     );
-
+            id.iBeaconId=beacon.uuid;
             $('#warning').remove();
             $('#found-beacons').append(element);
         }
