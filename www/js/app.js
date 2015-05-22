@@ -67,7 +67,7 @@ function startScan()
     delegate.didRangeBeaconsInRegion = function (pluginResult)
     {
         
-        console.log('didRangeBeaconsInRegion: ' + JSON.stringify(pluginResult));
+       alert('didRangeBeaconsInRegion: ' + JSON.stringify(pluginResult));
 //        alert(pluginResult);
         for (var i in pluginResult.beacons)
         {
