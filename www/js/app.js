@@ -9,7 +9,7 @@
 //{
 // Application object.
 var app = {};
-alert("start");
+//alert("start");
 // Specify your beacon 128bit UUIDs here.
 var regions =
         [
@@ -31,16 +31,16 @@ var updateTimer = null;
 
 app.initialize = function ()
 {
-    alert("init");
+//    alert("init");
     document.addEventListener('deviceready', onDeviceReady, false);
 };
 
 function onDeviceReady()
 {
-    alert("dR");
+//    alert("dR");
     // Specify a shortcut for the location manager holding the iBeacon functions.
     window.locationManager = cordova.plugins.locationManager;
-    alert("start scan");
+//    alert("start scan");
     // Start tracking beacons!
     startScan();
 
