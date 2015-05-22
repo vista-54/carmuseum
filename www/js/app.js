@@ -81,6 +81,7 @@ function startScan()
                 maxRSSI=beacon.rssi;
                 maxmajor=beacon.major;
                 maxminor=beacon.minor;
+                ChangeImage();
             }
         }
        
@@ -171,23 +172,23 @@ function displayBeaconList()
 //                maxminor=beacon.minor;
 //            }
             // Create tag to display beacon data.
-            var element = $(
-                    '<li>'
-                    + '<strong>UUID: ' + beacon.uuid + '</strong><br />'
-                    + 'Major: ' + beacon.major + '<br />'
-                    + 'Minor: ' + beacon.minor + '<br />'
-                    + 'Proximity: ' + beacon.proximity + '<br />'
-                    + 'RSSI: ' + beacon.rssi + '<br />'
-                    + 'Max RSSI:' + maxRSSI+ '<br/>'
-                    + 'Max major:' + maxmajor + '<br/>'
-                    + 'Max minor:' + maxminor + '<br/>'
-                    + 'All_beacon' + count + '<br/>'
-//                    + 'RSSI: ' + beacon.distance + '<br />'
-                    + '<div style="background:rgb(255,128,64);height:20px;width:'
-                    + rssiWidth + '%;"></div>'
-
-                    + '</li>'
-                    );
+//            var element = $(
+//                    '<li>'
+//                    + '<strong>UUID: ' + beacon.uuid + '</strong><br />'
+//                    + 'Major: ' + beacon.major + '<br />'
+//                    + 'Minor: ' + beacon.minor + '<br />'
+//                    + 'Proximity: ' + beacon.proximity + '<br />'
+//                    + 'RSSI: ' + beacon.rssi + '<br />'
+////                    + 'Max RSSI:' + maxRSSI+ '<br/>'
+////                    + 'Max major:' + maxmajor + '<br/>'
+////                    + 'Max minor:' + maxminor + '<br/>'
+////                    + 'All_beacon' + count + '<br/>'
+////                    + 'RSSI: ' + beacon.distance + '<br />'
+//                    + '<div style="background:rgb(255,128,64);height:20px;width:'
+//                    + rssiWidth + '%;"></div>'
+//
+//                    + '</li>'
+//                    );
                      
 //            id.iBeaconId=beacon.uuid;
 //            alert(id.iBeaconId);

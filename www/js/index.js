@@ -32,3 +32,6 @@ function readHost() {
         id.host = id.originalHost;
     }
 }
+function ChangeImage(){
+    
+}
