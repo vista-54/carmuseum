@@ -60,56 +60,31 @@ function startScan()
     // The delegate object holds the iBeacon callback functions
     // specified below.
     var delegate = new locationManager.Delegate();
-//    alert(delegate);
-//var count=0;
-//a
-//
-   
     // Called continuously when ranging beacons.
     delegate.didRangeBeaconsInRegion = function (pluginResult)
     {
-        
-       
-//        alert(pluginResult);
+        maxRSSI=-100;
         for (var i in pluginResult.beacons)
         {
             obj=pluginResult.beacons[i];
 //            alert('rssi: ' + JSON.stringify(pluginResult.beacons[i]));
 //            alert(pluginResult.beacons) 
-             maxRSSI=-100;
+             
 //             alert('N'+i+"RSSI"+pluginResult.beacons[i].rssi+"Minor"+pluginResult.beacons[i].minor)
             // Insert beacon into table of found beacons.
             var test={major:obj.major,minor:obj.minor,rssi:obj.rssi};
             alert(test.rssi);
-//                for(var i in pluginResult.beacons){
-//                    
-//                }
-//            array.push(obj);
-//             alert(JSON.stringify(array));
+            if(test.rssi>maxRSSI)
+            {
+                maxRSSI=test.rssi;
+            }
+           
             var beacon = pluginResult.beacons[i];
             beacon.timeStamp = Date.now();
-//            count = count + 1;
-//            var key=beacon.
-            var key = beacon.uuid + ':' + beacon.major + ':' + beacon.minor;
+            var key = beacon.uuid + ':' + beacon.major + ':' + beacon.minor+':'+maxRSSI;
             var max=beacon.rssi;
             beacons[key] = beacon;  
-            if(max<beacon.rssi){
-                max=beacon.rssi;
-            }
-//            if(beacon.rssi>maxRSSI){
-//                maxRSSI=beacon.rssi;
-//                maxmajor=beacon.major;
-//                maxminor=beacon.minor;
-//                if(count <5){
-//                count=count+1;}
-//            else{
-//                count=count-1;
-//            }
-//            
-//                ChangeImage(count);
-//            }
         }
-       
     };
     
 
@@ -204,7 +179,7 @@ function displayBeaconList()
                     + 'Minor: ' + beacon.minor + '<br />'
                     + 'Proximity: ' + beacon.proximity + '<br />'
                     + 'RSSI: ' + beacon.rssi + '<br />'
-                    + 'Max RSSI:' + max+ '<br/>'
+                    + 'Max RSSI:' + maxRSSI+ '<br/>'
                     + 'Max major:' + maxmajor + '<br/>'
                     + 'Max minor:' + maxminor + '<br/>'
 //                    + 'All_beacon' + count + '<br/>'
