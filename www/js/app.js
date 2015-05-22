@@ -80,7 +80,7 @@ function startScan()
 //             alert('N'+i+"RSSI"+pluginResult.beacons[i].rssi+"Minor"+pluginResult.beacons[i].minor)
             // Insert beacon into table of found beacons.
             var test={major:obj.major,minor:obj.minor,rssi:obj.rssi};
-            alert(obj.rssi[i]);
+            alert(test.rssi);
 //                for(var i in pluginResult.beacons){
 //                    
 //                }
