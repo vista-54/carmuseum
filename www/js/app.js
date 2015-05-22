@@ -102,7 +102,7 @@ function startScan()
     for (var i in regions)
     {
         var obj=regions[i];
-        if(obj.rssi[i]>maxRSSI)
+        if(obj.rssi>maxRSSI)
         {
             maxRSSI=obj.rssi;
         }
