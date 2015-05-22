@@ -40,6 +40,6 @@ FastClick is used to make UI responsive.
 
 	// Load FastClick, when loaded apply UI modifications.
 	evothings.loadScript(
-		'libs/evothings/ui/fastclick.js',
+		'js/libs/evothings/ui/fastclick.js',
 		applyUIUpdatesWhenPageHasLoaded);
 })();
