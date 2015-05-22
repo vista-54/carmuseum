@@ -133,8 +133,8 @@ function displayBeaconList()
             }
 
             // Create tag to display beacon data.
-            var element = 
-                    "<li>"
+            var element = $(
+                    '<li>'
                     + '<strong>UUID: ' + beacon.uuid + '</strong><br />'
                     + 'Major: ' + beacon.major + '<br />'
                     + 'Minor: ' + beacon.minor + '<br />'
@@ -144,16 +144,15 @@ function displayBeaconList()
                     + '<div style="background:rgb(255,128,64);height:20px;width:'
                     + rssiWidth + '%;"></div>'
                     
-                    + "</li>"
-//                    );
+                    + '</li>'
+                    );
 //            id.iBeaconId=beacon.uuid;
 //            alert(id.iBeaconId);
             $('#warning').remove();
-            
-            $('#found-beacons').html(element);
+            $('#found-beacons').append(element);
             
         }
-        
+        addDataToStore();
     });
 }
 
