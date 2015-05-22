@@ -73,12 +73,15 @@ function startScan()
 //             alert('N'+i+"RSSI"+pluginResult.beacons[i].rssi+"Minor"+pluginResult.beacons[i].minor)
             // Insert beacon into table of found beacons.
 //            var test={major:obj.major,minor:obj.minor,rssi:obj.rssi};
-                alert("rs"+pluginResult.beacons[i].rssi+"mINOR"+pluginResult.beacons[i].minor);
+//                alert("rs"+pluginResult.beacons[i].rssi+"mINOR"+pluginResult.beacons[i].minor);
 //            if(test.rssi>maxRSSI)
 //            {
 //                maxRSSI=test.rssi;
 //            }
-           
+           if(maxRSSI<pluginResult.beacons[i].rssi)
+           {
+               maxRSSI=pluginResult.beacons[i].rssi;
+           }
             var beacon = pluginResult.beacons[i];
             beacon.timeStamp = Date.now();
             
