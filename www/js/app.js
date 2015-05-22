@@ -8,6 +8,8 @@
 //var app = (function()
 //{
 // Application object.
+  var max=-100;
+var array=[];
 var maxRSSI = -100;
 var  maxmajor=0;
 var maxminor=0;
@@ -137,13 +139,23 @@ function displayBeaconList()
             else if (beacon.rssi < 0) {
                 rssiWidth = 100 + beacon.rssi;
             }
-            if(beacon.rssi > maxRSSI)
+            array.push(beacon.rssi);
+          
+            for (var i in array.length)
             {
-                maxRSSI=beacon.rssi;
-                maxmajor=beacon.major;
-                maxminor=beacon.minor;
-                
+
+                if(array[i]>max)
+                {
+                    max=array[i];
+                }
             }
+            maxRSSI=max;
+//            if(beacon.rssi > maxRSSI)
+//            {
+//                maxRSSI=beacon.rssi;
+//                maxmajor=beacon.major;
+//                maxminor=beacon.minor;
+//            }
             // Create tag to display beacon data.
             var element = $(
                     '<li>'
