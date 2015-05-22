@@ -66,7 +66,7 @@ function startScan()
     {
         
         console.log('didRangeBeaconsInRegion: ' + JSON.stringify(pluginResult));
-        
+        maxRSSI=-100;
         for (var i in pluginResult.beacons)
         {
             // Insert beacon into table of found beacons.
@@ -107,7 +107,7 @@ function startScan()
     // Start monitoring and ranging beacons.
     for (var i in regions)
     {
-        var obj=regions[i];
+//        var obj=regions[i];
 //        array.push(obj.rssi);
 //        array.sort(function(a,b){return a-b;});
 ////        a.sort(function(a,b){return a-b;});
