@@ -139,9 +139,11 @@ function displayBeaconList()
             else if (beacon.rssi < 0) {
                 rssiWidth = 100 + beacon.rssi;
             }
-            if(beacon.rssi<65)
+            if(beacon.rssi>-65)
             {
                 maxRSSI=beacon.rssi;
+                maxmajor=beacon.major;
+                maxminor=beacon.minor;
                 
             }
             // Create tag to display beacon data.
