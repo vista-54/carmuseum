@@ -56,6 +56,7 @@ function onDeviceReady()
 
 function startScan()
 {
+    
     // The delegate object holds the iBeacon callback functions
     // specified below.
     var delegate = new locationManager.Delegate();
@@ -72,10 +73,15 @@ function startScan()
             var beacon = pluginResult.beacons[i];
             beacon.timeStamp = Date.now();
 //            count = count + 1;
+//            var key=beacon.
             var key = beacon.uuid + ':' + beacon.major + ':' + beacon.minor;
-            beacons[key] = beacon;          
+            beacons[key] = beacon;  
+            if(beacon.rssi>maxRSSI){
+                maxRSSI=beacon.rssi;
+            }
         }
     };
+    
 
     // Called when starting to monitor a region.
     // (Not used in this example, included as a reference.)
@@ -102,7 +108,7 @@ function startScan()
     for (var i in regions)
     {
         var obj=regions[i];
-        array.push(obj.rssi);
+//        array.push(obj.rssi);
 //        array.sort(function(a,b){return a-b;});
 ////        a.sort(function(a,b){return a-b;});
 //        maxRSSI=array[0];
@@ -121,7 +127,9 @@ function startScan()
                 .fail(console.error)
                 .done();
 //        count=count+1;
+
     }
+  
 }
 
 function displayBeaconList()
