@@ -8,8 +8,8 @@ im = {
     i2: 'images/2.jpg',
     i3: 'images/3.jpg',
     i4: 'images/4.jpg',
-    i5: 'images/5.jpg'
-
+    i5: 'images/5.jpg',
+    v:0
 };
 var id = {
     originalHost: null,
@@ -41,46 +41,47 @@ function readHost() {
     }
 }
 function ChangeImage($majorMax,$minorMax) {
-var $var=0;
+
 if((app.Mjm!==$majorMax)||(app.Mnm!==$minorMax))
 {
     app.Mjm=$majorMax;
     app.Mnm=$minorMax;
-    if($var<5){
-    $var++;
+    if(im.v<5){
+    im.v++;
     }
     else
     {
-        $var--;
+        im.v--;
     }
+    change();
 }
 }
-function change($var){
- if($var===1){
+function change(){
+ if(im.v===1){
     var img = document.getElementById("ch");
     var att = document.createAttribute("src");
     att.value = im.i1;
     img.setAttributeNode(att);
 } 
- if($var===2){
+ if(im.v===2){
     var img = document.getElementById("ch");
     var att = document.createAttribute("src");
     att.value = im.i2;
     img.setAttributeNode(att);
 } 
- if($var===3){
+ if(im.v===3){
     var img = document.getElementById("ch");
     var att = document.createAttribute("src");
     att.value = im.i3;
     img.setAttributeNode(att);
 } 
- if($var===4){
+ if(im.v===4){
     var img = document.getElementById("ch");
     var att = document.createAttribute("src");
     att.value = im.i4;
     img.setAttributeNode(att);
 } 
- if($var===5){
+ if(im.v===5){
     var img = document.getElementById("ch");
     var att = document.createAttribute("src");
     att.value = im.i5;
