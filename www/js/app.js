@@ -61,23 +61,13 @@ function startScan()
     // specified below.
     var delegate = new locationManager.Delegate();
     // Called continuously when ranging beacons.
+    maxRSSI=-100;
     delegate.didRangeBeaconsInRegion = function (pluginResult)
     {
 //        maxRSSI=-100;
         for (var i in pluginResult.beacons)
         {
             obj=pluginResult.beacons[i];
-//            alert('rssi: ' + JSON.stringify(pluginResult.beacons[i]));
-//            alert(pluginResult.beacons) 
-             
-//             alert('N'+i+"RSSI"+pluginResult.beacons[i].rssi+"Minor"+pluginResult.beacons[i].minor)
-            // Insert beacon into table of found beacons.
-//            var test={major:obj.major,minor:obj.minor,rssi:obj.rssi};
-//                alert("rs"+pluginResult.beacons[i].rssi+"mINOR"+pluginResult.beacons[i].minor);
-//            if(test.rssi>maxRSSI)
-//            {
-//                maxRSSI=test.rssi;
-//            }
            if(maxRSSI<pluginResult.beacons[i].rssi)
            {
                maxRSSI=pluginResult.beacons[i].rssi;
