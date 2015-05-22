@@ -73,7 +73,7 @@ function startScan()
 //        alert(pluginResult);
         for (var i in pluginResult.beacons)
         {
-            alert('rssi: ' + JSON.stringify(pluginResult.beacons));
+            alert('rssi: ' + JSON.stringify(pluginResult.beacons[i]));
 //            alert(pluginResult.beacons) 
              maxRSSI=-100;
             // Insert beacon into table of found beacons.
