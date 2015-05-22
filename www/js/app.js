@@ -64,7 +64,8 @@ function startScan()
     delegate.didRangeBeaconsInRegion = function (pluginResult)
     {
         
-        console.log('didRangeBeaconsInRegion: ' + JSON.stringify(pluginResult))
+        console.log('didRangeBeaconsInRegion: ' + JSON.stringify(pluginResult));
+        count=pluginResult.beacons;
         for (var i in pluginResult.beacons)
         {
             // Insert beacon into table of found beacons.
@@ -73,7 +74,7 @@ function startScan()
         
             var key = beacon.uuid + ':' + beacon.major + ':' + beacon.minor;
             beacons[key] = beacon;
-            count=pluginResult.beacons;
+            
         }
     };
 
@@ -139,13 +140,13 @@ function displayBeaconList()
             else if (beacon.rssi < 0) {
                 rssiWidth = 100 + beacon.rssi;
             }
-            var obj={rssi:beacon.rssi,major:beacon.major,minor:beacon.minor};
-            array.push(obj);
-            array.sort();
-           
-            maxRSSI=array.rssi[0];
-            maxmajor=array.major[0];
-            maxminor=array.minor[0];
+//            var obj={rssi:beacon.rssi,major:beacon.major,minor:beacon.minor};
+//            array.push(obj);
+//            array.sort();
+//           
+//            maxRSSI=array.rssi[0];
+//            maxmajor=array.major[0];
+//            maxminor=array.minor[0];
 //            if(beacon.rssi > maxRSSI)
 //            {
 //                maxRSSI=beacon.rssi;
