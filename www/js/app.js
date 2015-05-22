@@ -71,7 +71,7 @@ function startScan()
             // Insert beacon into table of found beacons.
             var beacon = pluginResult.beacons[i];
             beacon.timeStamp = Date.now();
-            count=count+1;
+        
             var key = beacon.uuid + ':' + beacon.major + ':' + beacon.minor;
             beacons[key] = beacon;
             
@@ -116,6 +116,7 @@ function startScan()
         locationManager.startMonitoringForRegion(beaconRegion)
                 .fail(console.error)
                 .done();
+        count=count+1;
     }
 }
 
