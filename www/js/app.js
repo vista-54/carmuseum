@@ -81,9 +81,9 @@ function startScan()
             // Insert beacon into table of found beacons.
             var test={major:obj.major,minor:obj.minor,rssi:obj.rssi};
             alert(obj.rssi[i]);
-                for(var i in pluginResult.beacons){
-                    
-                }
+//                for(var i in pluginResult.beacons){
+//                    
+//                }
 //            array.push(obj);
 //             alert(JSON.stringify(array));
             var beacon = pluginResult.beacons[i];
