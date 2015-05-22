@@ -11,8 +11,8 @@
 //  var max=-100;
 
 var app = {
-    Mjm:null,
-    Mnm:null
+    Mjm:0,
+    Mnm:0
 };
 //alert("start");
 // Specify your beacon 128bit UUIDs here.

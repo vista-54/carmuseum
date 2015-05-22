@@ -42,47 +42,48 @@ function readHost() {
 }
 function ChangeImage($majorMax,$minorMax) {
 var $var=0;
-if(app.Mjm!=$majorMax||app.Mnm!=$minorMax)
+if((app.Mjm!==$majorMax)||(app.Mnm!==$minorMax))
 {
     app.Mjm=$majorMax;
     app.Mnm=$minorMax;
-    if($var<=5){
+    if($var<5){
     $var++;
     }
     else
     {
         $var--;
     }
-
- if($var=1){
+}
+}
+function change($var){
+ if($var===1){
     var img = document.getElementById("ch");
     var att = document.createAttribute("src");
     att.value = im.i1;
     img.setAttributeNode(att);
 } 
- if($var=2){
+ if($var===2){
     var img = document.getElementById("ch");
     var att = document.createAttribute("src");
     att.value = im.i2;
     img.setAttributeNode(att);
 } 
- if($var=3){
+ if($var===3){
     var img = document.getElementById("ch");
     var att = document.createAttribute("src");
     att.value = im.i3;
     img.setAttributeNode(att);
 } 
- if($var=4){
+ if($var===4){
     var img = document.getElementById("ch");
     var att = document.createAttribute("src");
     att.value = im.i4;
     img.setAttributeNode(att);
 } 
- if($var=5){
+ if($var===5){
     var img = document.getElementById("ch");
     var att = document.createAttribute("src");
     att.value = im.i5;
     img.setAttributeNode(att);
 } 
-}
 }
