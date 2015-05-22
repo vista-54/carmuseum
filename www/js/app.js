@@ -84,8 +84,8 @@ function startScan()
            }
             var beacon = pluginResult.beacons[i];
             beacon.timeStamp = Date.now();
-            
-            var key = beacon.uuid + ':' + beacon.major + ':' + beacon.minor;
+            beacon.max=maxRSSI;
+            var key = beacon.uuid + ':' + beacon.major + ':' + beacon.minor + ':'+beacon.max;
 //            var max=beacon.rssi;
             beacons[key] = beacon;  
         }
@@ -170,7 +170,7 @@ function displayBeaconList()
                     + 'Minor: ' + beacon.minor + '<br />'
                     + 'Proximity: ' + beacon.proximity + '<br />'
                     + 'RSSI: ' + beacon.rssi + '<br />'
-                    + 'Max RSSI:' + beacon.maxRSSI+ '<br/>'
+                    + 'Max RSSI:' + beacon.max+ '<br/>'
 //                    + 'Max major:' + maxmajor + '<br/>'
 //                    + 'Max minor:' + maxminor + '<br/>'
 //                    + 'All_beacon' + count + '<br/>'
