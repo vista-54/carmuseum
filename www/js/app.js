@@ -9,12 +9,11 @@
 //{
 // Application object.
 //  var max=-100;
-var max=0;
-var array=[];
-var  maxmajor=0;
-var maxminor=0;
-var count=0;
-var app = {};
+
+var app = {
+    Mjm:null,
+    Mnm:null
+};
 //alert("start");
 // Specify your beacon 128bit UUIDs here.
 var regions =
@@ -150,8 +149,10 @@ function displayBeaconList()
             rM=beacon.rssi;
             majorMax=beacon.major;
             minorMax=beacon.minor;
+           
         }
     });
+     ChangeImage(majorMax,minorMax);
     $.each(beacons, function (key, beacon)
     {
 
@@ -166,7 +167,7 @@ function displayBeaconList()
             else if (beacon.rssi < 0) {
                 rssiWidth = 100 + beacon.rssi;
             }
-            var m=max;
+            
             // Create tag to display beacon data.
             var element = $(
                     '<li>'

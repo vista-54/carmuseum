@@ -40,7 +40,19 @@ function readHost() {
         id.host = id.originalHost;
     }
 }
-function ChangeImage($var) {
+function ChangeImage($majorMax,$minorMax) {
+var $var=0;
+if(app.Mjm!=$majorMax||app.Mnm!=$minorMax)
+{
+    app.Mjm=$majorMax;
+    app.Mnm=$minorMax;
+    if($var<=5){
+    $var++;
+    }
+    else
+    {
+        $var--;
+    }
 
  if($var=1){
     var img = document.getElementById("ch");
@@ -72,5 +84,5 @@ function ChangeImage($var) {
     att.value = im.i5;
     img.setAttributeNode(att);
 } 
-
+}
 }
