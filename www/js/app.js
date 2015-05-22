@@ -140,16 +140,9 @@ function displayBeaconList()
                 rssiWidth = 100 + beacon.rssi;
             }
             array.push(beacon.rssi);
-          
-            for (var i in array.length)
-            {
-
-                if(array[i]>max)
-                {
-                    max=array[i];
-                }
-            }
-            maxRSSI=max;
+            array.sort();
+           
+            maxRSSI=array[array.length-1];
 //            if(beacon.rssi > maxRSSI)
 //            {
 //                maxRSSI=beacon.rssi;
