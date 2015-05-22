@@ -145,12 +145,13 @@ function displayBeaconList()
                     + rssiWidth + '%;"></div>'
                     + '</li>'
                     );
-            id.iBeaconId=beacon.uuid;
-            alert(id.iBeaconId);
+//            id.iBeaconId=beacon.uuid;
+//            alert(id.iBeaconId);
             $('#warning').remove();
             $('#found-beacons').append(element);
-            addDataToStore();
+            
         }
+        addDataToStore();
     });
 }
 
