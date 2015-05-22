@@ -68,18 +68,18 @@ function startScan()
         for (var i in pluginResult.beacons)
         {
          
-           if(maxRSSI<pluginResult.beacons[i].rssi)
-           {
-               maxRSSI=pluginResult.beacons[i].rssi;
-               console.log(maxRSSI);
-           }
+//           if(maxRSSI<pluginResult.beacons[i].rssi)
+//           {
+//               maxRSSI=pluginResult.beacons[i].rssi;
+//               console.log(maxRSSI);
+//           }
             var beacon = pluginResult.beacons[i];
             beacon.timeStamp = Date.now();
             
             var key = beacon.uuid + ':' + beacon.major + ':' + beacon.minor;
             beacons[key] = beacon;  
         }
-        max=maxRSSI;
+//        max=maxRSSI;
     };
     
 
@@ -139,10 +139,18 @@ function displayBeaconList()
     $('#info').empty();
     
     var timeNow = Date.now();
-
+    var rM=-100;
     // Update beacon list.
+      $.each(beacons, function (key, beacon)
+    {
+        if(beacon.rssi>rM)
+        {
+            rM=beacon.rssi;
+        }
+    });
     $.each(beacons, function (key, beacon)
     {
+
         // Only show beacons that are updated during the last 60 seconds.
         if (beacon.timeStamp + 60000 > timeNow)
         {
@@ -162,7 +170,7 @@ function displayBeaconList()
                     + 'Major: ' + beacon.major + '<br />'
                     + 'Minor: ' + beacon.minor + '<br />'
                     + 'Proximity: ' + beacon.proximity + '<br />'
-                    + 'RSSI: ' + beacon.rssi + '<br />'
+                    + 'RSSI: ' + rM + '<br />'
 //                    + 'Max major:' + maxmajor + '<br/>'
 //                    + 'Max minor:' + maxminor + '<br/>'
 //                    + 'All_beacon' + count + '<br/>'
@@ -173,7 +181,7 @@ function displayBeaconList()
                     );
             $('#warning').remove();
             $('#found-beacons').append(element);
-            $('#info').append(m);
+           
 
         }
       
