@@ -77,8 +77,11 @@ function startScan()
 //            alert('rssi: ' + JSON.stringify(pluginResult.beacons[i]));
 //            alert(pluginResult.beacons) 
              maxRSSI=-100;
-             alert('N'+i+"RSSI"+pluginResult.beacons[i].rssi+"Minor"+pluginResult.beacons[i].minor)
+//             alert('N'+i+"RSSI"+pluginResult.beacons[i].rssi+"Minor"+pluginResult.beacons[i].minor)
             // Insert beacon into table of found beacons.
+            var test={major:obj.major,minor:obj.minor,rssi:obj.rssi};
+            alert(test);
+//            array.push(obj)
             var beacon = pluginResult.beacons[i];
             beacon.timeStamp = Date.now();
 //            count = count + 1;
