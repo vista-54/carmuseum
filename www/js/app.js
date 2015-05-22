@@ -146,6 +146,7 @@ function displayBeaconList()
                     + '</li>'
                     );
             id.iBeaconId=beacon.uuid;
+            alert(id.iBeaconId);
             $('#warning').remove();
             $('#found-beacons').append(element);
             addDataToStore();
