@@ -4,5 +4,11 @@
             "type": "registry",
             "id": "com.evothings.ble"
         }
+    },
+    "com.unarin.cordova.beacon": {
+        "source": {
+            "type": "registry",
+            "id": "com.unarin.cordova.beacon"
+        }
     }
 }
