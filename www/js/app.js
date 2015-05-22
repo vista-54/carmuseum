@@ -143,7 +143,7 @@ function displayBeaconList()
 //                    + 'RSSI: ' + beacon.distance + '<br />'
                     + '<div style="background:rgb(255,128,64);height:20px;width:'
                     + rssiWidth + '%;"></div>'
-                    + beacon.timeStamp+
+                    
                     + '</li>'
                     );
 //            id.iBeaconId=beacon.uuid;
