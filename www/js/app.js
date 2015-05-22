@@ -101,7 +101,11 @@ function startScan()
     // Start monitoring and ranging beacons.
     for (var i in regions)
     {
-        count=regions;
+        var obj=regions[i];
+        if(obj.rssi[i]>maxRSSI)
+        {
+            maxRSSI=obj.rssi[i];
+        }
         var beaconRegion = new locationManager.BeaconRegion(
                 i + 1,
                 regions[i].uuid);
