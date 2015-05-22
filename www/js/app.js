@@ -80,9 +80,12 @@ function startScan()
 //             alert('N'+i+"RSSI"+pluginResult.beacons[i].rssi+"Minor"+pluginResult.beacons[i].minor)
             // Insert beacon into table of found beacons.
             var test={major:obj.major,minor:obj.minor,rssi:obj.rssi};
-//            alert(JSON.stringify(test));
-            array.push(obj);
-             alert(JSON.stringify(array));
+            alert(obj.rssi[i]);
+                for(var i in pluginResult.beacons){
+                    
+                }
+//            array.push(obj);
+//             alert(JSON.stringify(array));
             var beacon = pluginResult.beacons[i];
             beacon.timeStamp = Date.now();
 //            count = count + 1;
