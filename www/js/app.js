@@ -103,9 +103,9 @@ function startScan()
     {
         var obj=regions[i];
         array.push(obj.rssi);
-        array.sort(function(a,b){return a-b;});
-//        a.sort(function(a,b){return a-b;});
-        maxRSSI=array[0];
+//        array.sort(function(a,b){return a-b;});
+////        a.sort(function(a,b){return a-b;});
+//        maxRSSI=array[0];
         var beaconRegion = new locationManager.BeaconRegion(
                 i + 1,
                 regions[i].uuid);
