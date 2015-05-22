@@ -69,7 +69,7 @@ function startScan()
     delegate.didRangeBeaconsInRegion = function (pluginResult)
     {
         
-       alert('rssi: ' + JSON.stringify(pluginResult.beacons.rssi[0]));
+       alert('rssi: ' + JSON.stringify(pluginResult.beacons));
 //        alert(pluginResult);
         for (var i in pluginResult.beacons)
         {
