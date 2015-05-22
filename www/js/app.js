@@ -73,7 +73,7 @@ function startScan()
 //             alert('N'+i+"RSSI"+pluginResult.beacons[i].rssi+"Minor"+pluginResult.beacons[i].minor)
             // Insert beacon into table of found beacons.
             var test={major:obj.major,minor:obj.minor,rssi:obj.rssi};
-            alert(test.rssi);
+//            alert(test.rssi);
             if(test.rssi>maxRSSI)
             {
                 maxRSSI=test.rssi;
