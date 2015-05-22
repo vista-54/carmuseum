@@ -69,7 +69,7 @@ function startScan()
        
         for (var i in pluginResult.beacons)
         {
-             
+             maxRSSI=-100;
             // Insert beacon into table of found beacons.
             var beacon = pluginResult.beacons[i];
             beacon.timeStamp = Date.now();
@@ -83,7 +83,7 @@ function startScan()
                 maxminor=beacon.minor;
             }
         }
-        maxRSSI=-100;
+       
     };
     
 
