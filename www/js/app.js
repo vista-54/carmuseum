@@ -140,12 +140,16 @@ function displayBeaconList()
     
     var timeNow = Date.now();
     var rM=-100;
+    var majorMax=0;
+    var minorMax=0;
     // Update beacon list.
       $.each(beacons, function (key, beacon)
     {
         if(beacon.rssi>rM)
         {
             rM=beacon.rssi;
+            majorMax=beacon.major;
+            minorMax=beacon.minor;
         }
     });
     $.each(beacons, function (key, beacon)
@@ -172,10 +176,8 @@ function displayBeaconList()
                     + 'Proximity: ' + beacon.proximity + '<br />'
                     + 'RSSI: ' + beacon.rssi + '<br />'
                     + 'RSSI-maX: ' + rM + '<br />'
-//                    + 'Max major:' + maxmajor + '<br/>'
-//                    + 'Max minor:' + maxminor + '<br/>'
-//                    + 'All_beacon' + count + '<br/>'
-//                    + 'RSSI: ' + beacon.distance + '<br />'
+                    + 'Max major:' + majorMax + '<br/>'
+                    + 'Max minor:' + minorMax + '<br/>'
                     + '<div style="background:rgb(255,128,64);height:20px;width:'
                     + rssiWidth + '%;"></div>'
                     + '</li>'
