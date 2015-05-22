@@ -63,7 +63,7 @@ function startScan()
     // Called continuously when ranging beacons.
     delegate.didRangeBeaconsInRegion = function (pluginResult)
     {
-        maxRSSI=-100;
+//        maxRSSI=-100;
         for (var i in pluginResult.beacons)
         {
             obj=pluginResult.beacons[i];
@@ -72,17 +72,17 @@ function startScan()
              
 //             alert('N'+i+"RSSI"+pluginResult.beacons[i].rssi+"Minor"+pluginResult.beacons[i].minor)
             // Insert beacon into table of found beacons.
-            var test={major:obj.major,minor:obj.minor,rssi:obj.rssi};
-//            alert(test.rssi);
-            if(test.rssi>maxRSSI)
-            {
-                maxRSSI=test.rssi;
-            }
+//            var test={major:obj.major,minor:obj.minor,rssi:obj.rssi};
+////            alert(test.rssi);
+//            if(test.rssi>maxRSSI)
+//            {
+//                maxRSSI=test.rssi;
+//            }
            
             var beacon = pluginResult.beacons[i];
             beacon.timeStamp = Date.now();
-            beacon.maxRSSI=maxRSSI;
-            var key = beacon.uuid + ':' + beacon.major + ':' + beacon.minor+':'+beacon.maxRSSI;
+            
+            var key = beacon.uuid + ':' + beacon.major + ':' + beacon.minor;
 //            var max=beacon.rssi;
             beacons[key] = beacon;  
         }
@@ -159,19 +159,6 @@ function displayBeaconList()
             else if (beacon.rssi < 0) {
                 rssiWidth = 100 + beacon.rssi;
             }
-//            var obj={rssi:beacon.rssi,major:beacon.major,minor:beacon.minor};
-//            array.push(obj);
-//            array.sort();
-//           
-//            maxRSSI=array.rssi[0];
-//            maxmajor=array.major[0];
-//            maxminor=array.minor[0];
-//            if(beacon.rssi > maxRSSI)
-//            {
-//                maxRSSI=beacon.rssi;
-//                maxmajor=beacon.major;
-//                maxminor=beacon.minor;
-//            }
             // Create tag to display beacon data.
             var element = $(
                     '<li>'
@@ -187,7 +174,6 @@ function displayBeaconList()
 //                    + 'RSSI: ' + beacon.distance + '<br />'
                     + '<div style="background:rgb(255,128,64);height:20px;width:'
                     + rssiWidth + '%;"></div>'
-
                     + '</li>'
                     );
                      
@@ -197,7 +183,7 @@ function displayBeaconList()
             $('#found-beacons').append(element);
 
         }
-        addDataToStore();
+      
     });
 }
 
