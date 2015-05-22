@@ -60,7 +60,7 @@ function startScan()
     // The delegate object holds the iBeacon callback functions
     // specified below.
     var delegate = new locationManager.Delegate();
-    alert(delegate);
+//    alert(delegate);
 //var count=0;
 //a
     // Called continuously when ranging beacons.
@@ -68,10 +68,10 @@ function startScan()
     {
         
         console.log('didRangeBeaconsInRegion: ' + JSON.stringify(pluginResult));
-        alert(pluginResult);
+//        alert(pluginResult);
         for (var i in pluginResult.beacons)
         {
-            alert(pluginResult.beacons) 
+//            alert(pluginResult.beacons) 
              maxRSSI=-100;
             // Insert beacon into table of found beacons.
             var beacon = pluginResult.beacons[i];
@@ -79,19 +79,23 @@ function startScan()
 //            count = count + 1;
 //            var key=beacon.
             var key = beacon.uuid + ':' + beacon.major + ':' + beacon.minor;
+            var max=beacon.rssi;
             beacons[key] = beacon;  
-            if(beacon.rssi>maxRSSI){
-                maxRSSI=beacon.rssi;
-                maxmajor=beacon.major;
-                maxminor=beacon.minor;
-                if(count <5){
-                count=count+1;}
-            else{
-                count=count-1;
+            if(max<beacon.rssi){
+                max=beacon.rssi;
             }
-            
-                ChangeImage(count);
-            }
+//            if(beacon.rssi>maxRSSI){
+//                maxRSSI=beacon.rssi;
+//                maxmajor=beacon.major;
+//                maxminor=beacon.minor;
+//                if(count <5){
+//                count=count+1;}
+//            else{
+//                count=count-1;
+//            }
+//            
+//                ChangeImage(count);
+//            }
         }
        
     };
@@ -188,7 +192,7 @@ function displayBeaconList()
                     + 'Minor: ' + beacon.minor + '<br />'
                     + 'Proximity: ' + beacon.proximity + '<br />'
                     + 'RSSI: ' + beacon.rssi + '<br />'
-//                    + 'Max RSSI:' + maxRSSI+ '<br/>'
+                    + 'Max RSSI:' + max+ '<br/>'
                     + 'Max major:' + maxmajor + '<br/>'
                     + 'Max minor:' + maxminor + '<br/>'
 //                    + 'All_beacon' + count + '<br/>'
