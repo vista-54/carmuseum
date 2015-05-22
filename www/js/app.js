@@ -81,7 +81,12 @@ function startScan()
                 maxRSSI=beacon.rssi;
                 maxmajor=beacon.major;
                 maxminor=beacon.minor;
-                ChangeImage();
+                if(count <5){
+                count=count+1;}
+            else{
+                count=count-1;
+            }
+                ChangeImage(count);
             }
         }
        
