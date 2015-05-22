@@ -66,9 +66,10 @@ function startScan()
     {
         
         console.log('didRangeBeaconsInRegion: ' + JSON.stringify(pluginResult));
-        maxRSSI=-100;
+       
         for (var i in pluginResult.beacons)
         {
+             
             // Insert beacon into table of found beacons.
             var beacon = pluginResult.beacons[i];
             beacon.timeStamp = Date.now();
@@ -78,8 +79,11 @@ function startScan()
             beacons[key] = beacon;  
             if(beacon.rssi>maxRSSI){
                 maxRSSI=beacon.rssi;
+                maxmajor=beacon.major;
+                maxminor=beacon.minor;
             }
         }
+        maxRSSI=-100;
     };
     
 
