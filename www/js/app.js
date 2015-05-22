@@ -73,8 +73,8 @@ function startScan()
            }
             var beacon = pluginResult.beacons[i];
             beacon.timeStamp = Date.now();
-            beacon.max=maxRSSI;
-            var key = beacon.uuid + ':' + beacon.major + ':' + beacon.minor + ':'+beacon.max;
+//            beacon.max=maxRSSI;
+            var key = beacon.uuid + ':' + beacon.major + ':' + beacon.minor;
             beacons[key] = beacon;  
         }
     };
