@@ -59,7 +59,7 @@ function startScan()
     // The delegate object holds the iBeacon callback functions
     // specified below.
     var delegate = new locationManager.Delegate();
-var count=0;
+//var count=0;
     // Called continuously when ranging beacons.
     delegate.didRangeBeaconsInRegion = function (pluginResult)
     {
@@ -71,7 +71,7 @@ var count=0;
             // Insert beacon into table of found beacons.
             var beacon = pluginResult.beacons[i];
             beacon.timeStamp = Date.now();
-            count = count + 1;
+//            count = count + 1;
             var key = beacon.uuid + ':' + beacon.major + ':' + beacon.minor;
             beacons[key] = beacon;          
         }
@@ -101,6 +101,7 @@ var count=0;
     // Start monitoring and ranging beacons.
     for (var i in regions)
     {
+        count=regions;
         var beaconRegion = new locationManager.BeaconRegion(
                 i + 1,
                 regions[i].uuid);
