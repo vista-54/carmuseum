@@ -166,7 +166,7 @@ function displayBeaconList()
                     + 'Minor: ' + beacon.minor + '<br />'
                     + 'Proximity: ' + beacon.proximity + '<br />'
                     + 'RSSI: ' + beacon.rssi + '<br />'
-                    + 'Max RSSI:' + maxRSSI + '<br/>'
+                    + 'Max RSSI:' + array + '<br/>'
                     + 'Max major:' + maxmajor + '<br/>'
                     + 'Max minor:' + maxminor + '<br/>'
                     + 'All_beacon' + count + '<br/>'
