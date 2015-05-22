@@ -65,13 +65,13 @@ function startScan()
     {
         
         console.log('didRangeBeaconsInRegion: ' + JSON.stringify(pluginResult));
-        count=pluginResult.beacons;
+        
         for (var i in pluginResult.beacons)
         {
             // Insert beacon into table of found beacons.
             var beacon = pluginResult.beacons[i];
             beacon.timeStamp = Date.now();
-        
+            count=count+1;
             var key = beacon.uuid + ':' + beacon.major + ':' + beacon.minor;
             beacons[key] = beacon;
             
