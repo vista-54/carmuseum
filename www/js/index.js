@@ -4,11 +4,10 @@
  * and open the template in the editor.
  */
 var id={
-    iBeaconId:null
+    iBeaconId:[]
 };
 var store = window.localStorage;
 
 function addDataToStore() {
     store.setItem('UUID', JSON.stringify(id.iBeaconId));
-
 }
