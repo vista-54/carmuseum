@@ -9,7 +9,7 @@ im = {
     i3: 'images/3.jpg',
     i4: 'images/4.jpg',
     i5: 'images/5.jpg',
-    v:0
+    v: 0
 };
 var id = {
     originalHost: null,
@@ -40,51 +40,51 @@ function readHost() {
         id.host = id.originalHost;
     }
 }
-function ChangeImage($majorMax,$minorMax) {
+function ChangeImage($majorMax, $minorMax) {
 
-if((app.Mjm!==$majorMax)||(app.Mnm!==$minorMax))
-{
-    app.Mjm=$majorMax;
-    app.Mnm=$minorMax;
-    if(im.v<5){
-    im.v++;
-    }
-    else
+    if ((app.Mjm !== $majorMax) || (app.Mnm !== $minorMax))
     {
-        im.v--;
+        app.Mjm = $majorMax;
+        app.Mnm = $minorMax;
+// использование Math.round() даст неравномерное распределение!
+        im.v = getRandomInt(1, 5);
+
+        change();
     }
-    change();
 }
+function change() {
+    if (im.v === 1) {
+        var img = document.getElementById("ch");
+        var att = document.createAttribute("src");
+        att.value = im.i1;
+        img.setAttributeNode(att);
+    }
+    if (im.v === 2) {
+        var img = document.getElementById("ch");
+        var att = document.createAttribute("src");
+        att.value = im.i2;
+        img.setAttributeNode(att);
+    }
+    if (im.v === 3) {
+        var img = document.getElementById("ch");
+        var att = document.createAttribute("src");
+        att.value = im.i3;
+        img.setAttributeNode(att);
+    }
+    if (im.v === 4) {
+        var img = document.getElementById("ch");
+        var att = document.createAttribute("src");
+        att.value = im.i4;
+        img.setAttributeNode(att);
+    }
+    if (im.v === 5) {
+        var img = document.getElementById("ch");
+        var att = document.createAttribute("src");
+        att.value = im.i5;
+        img.setAttributeNode(att);
+    }
 }
-function change(){
- if(im.v===1){
-    var img = document.getElementById("ch");
-    var att = document.createAttribute("src");
-    att.value = im.i1;
-    img.setAttributeNode(att);
-} 
- if(im.v===2){
-    var img = document.getElementById("ch");
-    var att = document.createAttribute("src");
-    att.value = im.i2;
-    img.setAttributeNode(att);
-} 
- if(im.v===3){
-    var img = document.getElementById("ch");
-    var att = document.createAttribute("src");
-    att.value = im.i3;
-    img.setAttributeNode(att);
-} 
- if(im.v===4){
-    var img = document.getElementById("ch");
-    var att = document.createAttribute("src");
-    att.value = im.i4;
-    img.setAttributeNode(att);
-} 
- if(im.v===5){
-    var img = document.getElementById("ch");
-    var att = document.createAttribute("src");
-    att.value = im.i5;
-    img.setAttributeNode(att);
-} 
+function getRandomInt(min, max)
+{
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
