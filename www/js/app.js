@@ -9,6 +9,7 @@
 //{
 // Application object.
 //  var max=-100;
+var max=0;
 var array=[];
 var  maxmajor=0;
 var maxminor=0;
@@ -73,10 +74,11 @@ function startScan()
            }
             var beacon = pluginResult.beacons[i];
             beacon.timeStamp = Date.now();
-//            beacon.max=maxRSSI;
+            
             var key = beacon.uuid + ':' + beacon.major + ':' + beacon.minor;
             beacons[key] = beacon;  
         }
+        max=maxRSSI;
     };
     
 
@@ -158,7 +160,7 @@ function displayBeaconList()
                     + 'Minor: ' + beacon.minor + '<br />'
                     + 'Proximity: ' + beacon.proximity + '<br />'
                     + 'RSSI: ' + beacon.rssi + '<br />'
-                    + 'Max RSSI:' + beacon.max+ '<br/>'
+                    + 'Max RSSI:' + max+ '<br/>'
 //                    + 'Max major:' + maxmajor + '<br/>'
 //                    + 'Max minor:' + maxminor + '<br/>'
 //                    + 'All_beacon' + count + '<br/>'
@@ -167,9 +169,6 @@ function displayBeaconList()
                     + rssiWidth + '%;"></div>'
                     + '</li>'
                     );
-                     
-//            id.iBeaconId=beacon.uuid;
-//            alert(id.iBeaconId);
             $('#warning').remove();
             $('#found-beacons').append(element);
 
