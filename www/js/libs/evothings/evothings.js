@@ -242,5 +242,5 @@
 
 	/* ------------------ Load UI script ------------------ */
 
-	evothings.loadScript('libs/evothings/ui/ui.js');
+	evothings.loadScript('js/libs/evothings/ui/ui.js');
 })();

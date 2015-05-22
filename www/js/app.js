@@ -40,7 +40,7 @@ function onDeviceReady()
     alert("dR");
     // Specify a shortcut for the location manager holding the iBeacon functions.
     window.locationManager = cordova.plugins.locationManager;
-    alert("start scat");
+    alert("start scan");
     // Start tracking beacons!
     startScan();
 
