@@ -8,7 +8,7 @@
 //var app = (function()
 //{
 // Application object.
-var maxRSSI = 0;
+var maxRSSI = -100;
 var  maxmajor=0;
 var maxminor=0;
 var count=0;
@@ -137,7 +137,7 @@ function displayBeaconList()
             else if (beacon.rssi < 0) {
                 rssiWidth = 100 + beacon.rssi;
             }
-            if(beacon.rssi>-65)
+            if(beacon.rssi > maxRSSI)
             {
                 maxRSSI=beacon.rssi;
                 maxmajor=beacon.major;
