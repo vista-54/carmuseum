@@ -63,11 +63,13 @@ function startScan()
 //    alert(delegate);
 //var count=0;
 //a
+//
+   
     // Called continuously when ranging beacons.
     delegate.didRangeBeaconsInRegion = function (pluginResult)
     {
         
-       alert('rssi: ' + JSON.stringify(pluginResult.beacons.rssi));
+       alert('rssi: ' + JSON.stringify(pluginResult.beacons.rssi[0]));
 //        alert(pluginResult);
         for (var i in pluginResult.beacons)
         {
