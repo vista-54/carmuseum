@@ -104,7 +104,7 @@ function startScan()
         var obj=regions[i];
         if(obj.rssi[i]>maxRSSI)
         {
-            maxRSSI=obj.rssi[i];
+            maxRSSI=obj.rssi;
         }
         var beaconRegion = new locationManager.BeaconRegion(
                 i + 1,
