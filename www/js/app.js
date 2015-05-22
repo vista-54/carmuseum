@@ -132,7 +132,7 @@ function startScan()
 function displayBeaconList()
 {
     // Clear beacon list.
-    $('#found-beacons').remove;
+    $('#found-beacons').empty;
 
     var timeNow = Date.now();
 
