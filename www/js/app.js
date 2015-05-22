@@ -10,7 +10,6 @@
 // Application object.
 //  var max=-100;
 var array=[];
-var maxRSSI = -100;
 var  maxmajor=0;
 var maxminor=0;
 var count=0;
@@ -61,13 +60,13 @@ function startScan()
     // specified below.
     var delegate = new locationManager.Delegate();
     // Called continuously when ranging beacons.
-    maxRSSI=-100;
+  
     delegate.didRangeBeaconsInRegion = function (pluginResult)
     {
-//        maxRSSI=-100;
+       var maxRSSI=-100;
         for (var i in pluginResult.beacons)
         {
-            obj=pluginResult.beacons[i];
+         
            if(maxRSSI<pluginResult.beacons[i].rssi)
            {
                maxRSSI=pluginResult.beacons[i].rssi;
@@ -76,7 +75,6 @@ function startScan()
             beacon.timeStamp = Date.now();
             beacon.max=maxRSSI;
             var key = beacon.uuid + ':' + beacon.major + ':' + beacon.minor + ':'+beacon.max;
-//            var max=beacon.rssi;
             beacons[key] = beacon;  
         }
     };
@@ -134,7 +132,7 @@ function startScan()
 function displayBeaconList()
 {
     // Clear beacon list.
-    $('#found-beacons').empty();
+    $('#found-beacons').remove;
 
     var timeNow = Date.now();
 
