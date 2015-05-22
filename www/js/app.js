@@ -11,6 +11,7 @@
 var maxRSSI = 0;
 var  maxmajor=0;
 var maxminor=0;
+var count=0;
 var app = {};
 //alert("start");
 // Specify your beacon 128bit UUIDs here.
@@ -60,20 +61,17 @@ function startScan()
     // Called continuously when ranging beacons.
     delegate.didRangeBeaconsInRegion = function (pluginResult)
     {
+        
         console.log('didRangeBeaconsInRegion: ' + JSON.stringify(pluginResult))
         for (var i in pluginResult.beacons)
         {
             // Insert beacon into table of found beacons.
             var beacon = pluginResult.beacons[i];
             beacon.timeStamp = Date.now();
-            if (beacon.rssi[i] > maxRSSI)
-            {
-                maxRSSI = beacon.rssi[i];
-                maxmajor=beacon.major[i];
-                maxminor=beacon.minor[i];
-            }
+        
             var key = beacon.uuid + ':' + beacon.major + ':' + beacon.minor;
             beacons[key] = beacon;
+            count+1;
         }
     };
 
@@ -157,6 +155,7 @@ function displayBeaconList()
                     + 'Max RSSI:' + maxRSSI + '<br/>'
                     + 'Max major:' + maxmajor + '<br/>'
                     + 'Max minor:' + maxminor + '<br/>'
+                    + 'All_beacon' + count + '<br/>'
 //                    + 'RSSI: ' + beacon.distance + '<br />'
                     + '<div style="background:rgb(255,128,64);height:20px;width:'
                     + rssiWidth + '%;"></div>'
