@@ -46,9 +46,8 @@ function ChangeImage($majorMax, $minorMax) {
     {
         app.Mjm = $majorMax;
         app.Mnm = $minorMax;
-// использование Math.round() даст неравномерное распределение!
-        im.v = getRandomInt(1, 5);
 
+        im.v = getRandomInt(1, 5);
         change();
     }
 }
