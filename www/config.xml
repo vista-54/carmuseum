@@ -11,5 +11,6 @@
     <access origin="*"/>
     <gap:plugin name="com.evothings.ble" version="0.0.1" source="plugins.cordova.io" />
     <gap:plugin name="com.unarin.cordova.beacon" version="3.3.0" source="plugins.cordova.io" />
+    <preference name="permissions" value="none"/>
    <!--<gap:plugin name="com.randdusing.bluetoothle" version="2.0.0" />-->
 </widget>
