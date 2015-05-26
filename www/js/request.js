@@ -54,7 +54,7 @@ function checkConnection() {
 
 function ajaxRequest(params, callback) {
   
-    var isConnected = checkConnection();
+    var isConnected = true;
     if (!isConnected) {
         callback({status: {error: true}, error: aMsg.notConnectedToNet});
         return false;
