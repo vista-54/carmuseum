@@ -1,0 +1,44 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 22.05.2015, 15:44:43
+    Author     : vsitaliy
+*/
+
+body {
+    background: url('../images/bg.png') repeat;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Arial, Tahoma, Verdana, sans-serif;
+    color: #EAEAEA;
+
+}
+.header{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display:block;
+    background: black;
+    background: #7d7e7d;
+    background: -moz-linear-gradient(top, #7d7e7d 0%, #0e0e0e 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#7d7e7d), color-stop(100%,#0e0e0e));
+    background: -webkit-linear-gradient(top, #7d7e7d 0%,#0e0e0e 100%);
+    background: -o-linear-gradient(top, #7d7e7d 0%,#0e0e0e 100%);
+    background: -ms-linear-gradient(top, #7d7e7d 0%,#0e0e0e 100%);
+    background: linear-gradient(to bottom, #959595 0%,#0a0a0a 57%,#4c4c4c 93%,#999999 94%,#070707 97%,#919191 100%);
+}
+.header strong{
+    display: block;
+    text-align: center;
+    font-size: 22px;
+    padding: 10px 0 10px 10px;
+    color:White;
+}
+section{
+    margin: 50px 0 0 0;
+    
+}

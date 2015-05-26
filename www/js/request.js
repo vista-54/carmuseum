@@ -5,7 +5,7 @@
  */
 
 
-id.originalHost = 'http://carmuseum/';
+id.originalHost = 'http://159.224.220.250/carmuseum/';
 
 var url = {
     GetData: 'GetId.php'
