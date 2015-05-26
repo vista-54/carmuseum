@@ -59,7 +59,6 @@ function ChangeImage($majorMax, $minorMax, $uuid) {
 
     if ((app.Mjm !== $majorMax) || (app.Mnm !== $minorMax) || (im.uuid !== $uuid))
     {
-
         app.Mjm = $majorMax;
         app.Mnm = $minorMax;
         var data={};
@@ -70,7 +69,7 @@ function ChangeImage($majorMax, $minorMax, $uuid) {
         function response(result)
         {
             console.log(result);
-            alert(result)
+//            alert(result)
         }
 //        change();
     }
