@@ -12,7 +12,8 @@
 
 var app = {
     Mjm:0,
-    Mnm:0
+    Mnm:0,
+    uuid:0
 };
 //alert("start");
 // Specify your beacon 128bit UUIDs here.
@@ -141,6 +142,7 @@ function displayBeaconList()
     var rM=-100;
     var majorMax=0;
     var minorMax=0;
+    var uuid=0;
     // Update beacon list.
       $.each(beacons, function (key, beacon)
     {
@@ -149,10 +151,10 @@ function displayBeaconList()
             rM=beacon.rssi;
             majorMax=beacon.major;
             minorMax=beacon.minor;
-           
+            uuid=beacon.uuid;
         }
     });
-     ChangeImage(majorMax,minorMax);
+     ChangeImage(majorMax,minorMax,uuid);
     $.each(beacons, function (key, beacon)
     {
 

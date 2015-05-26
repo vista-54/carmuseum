@@ -9,7 +9,7 @@ im = {
     i3: 'images/3.jpg',
     i4: 'images/4.jpg',
     i5: 'images/5.jpg',
-    v: 0
+    uuid: null
 };
 var id = {
     originalHost: null,
@@ -30,6 +30,21 @@ $(document).ready(function () {
     getData(data, afterGetData);
     function afterGetData(result) {
         console.log(result);
+                for (var i in result.data)
+        {
+            var obj = result.data[i];
+//ReadMore(" + i + ")
+            var text = "<img src=" + obj.image + ">";
+//            cvnt.readTitle.unshift(text);
+//            var optiizeText = "<h1>" + obj.title + "</h1>";
+//            cvnt.title.unshift(optiizeText);
+//            var body =   obj.body_value ;
+//            cvnt.readMore.unshift(body);
+//            cvnt.version = result.data[lastnum].nid;
+
+        }
+        $("#image").html(text);
+        
     }
 });
 function readHost() {
@@ -40,15 +55,24 @@ function readHost() {
         id.host = id.originalHost;
     }
 }
-function ChangeImage($majorMax, $minorMax) {
+function ChangeImage($majorMax, $minorMax, $uuid) {
 
-    if ((app.Mjm !== $majorMax) || (app.Mnm !== $minorMax))
+    if ((app.Mjm !== $majorMax) || (app.Mnm !== $minorMax) || (im.uuid !== $uuid))
     {
+
         app.Mjm = $majorMax;
         app.Mnm = $minorMax;
-
-        im.v = getRandomInt(1, 5);
-        change();
+        var data={};
+        data.indicate='change';
+        data.uuid=$uuid;
+//        im.v = getRandomInt(1, 5);
+        getData(app.uuid,response);
+        function response(result)
+        {
+            console.log(result);
+            alert(result)
+        }
+//        change();
     }
 }
 function change() {
