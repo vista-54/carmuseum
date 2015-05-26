@@ -12,6 +12,7 @@ im = {
     uuid: null,
     titles:["ferrari","nissan","lamborgini","audi","dodge"]
 };
+
 var id = {
     originalHost: null,
     host: null,
@@ -44,7 +45,7 @@ $(document).ready(function () {
 //            cvnt.version = result.data[lastnum].nid;
 
         }
-        $("#image").html(text);
+//        $("#image").html(text);
         
     }
 });
@@ -63,17 +64,42 @@ function ChangeImage($majorMax, $minorMax, $uuid) {
         app.Mjm = $majorMax;
         app.Mnm = $minorMax;
         app.uuid=$uuid;
+        var u = getRandomInt(0, 4);
         var data={};
         data.indicate='GetData';
-        data.title=im.titles[0];
+        data.title=im.titles[u];
 //        data.uuid=$uuid;
-//        im.v = getRandomInt(1, 5);
+        
         getData(data,response);
         function response(result)
         {
             console.log(result);
-//            alert(result)
+          if (result.status.error) {
+//            showErrorMessage(result.error);
+            $.unblockUI();
+            return;
         }
+            var obj = result.data[0];
+           var title=obj.title_lot;
+            var body=obj.desc_lot;
+            var img=obj.image;
+            $("#list").html("<img src="+img+"><br><h1>"+title+"</h1><br><p>"+body+"</p>");
+        }
+//        {
+
+            
+//            for (var i in result.data)
+//        {
+//            var obj = result.data[0];
+//            title=obj.title_lot;
+//            body=obj.desc_lot;
+//            img=obj.image;
+//
+//            
+//        }
+//        $("#list").html("<img src="+img+"<br><h1>"+title+"</h1><br><p>"+body+"</p>");
+//            alert(result)
+//        }
 //        change();
     }
 }
