@@ -21,6 +21,32 @@ function getData(formData, callback){
     };
     ajaxRequest(params, callback);
 }
+function checkConnection() {
+    try {
+        if(typeof(navigator.connection) === 'undefined'){
+            return true;  // is browser
+        }
+        var networkState = navigator.connection.type;
+
+        var states = {};
+        states[Connection.UNKNOWN] = 'Unknown connection';
+        states[Connection.ETHERNET] = 'Ethernet connection';
+        states[Connection.WIFI] = 'WiFi connection';
+        states[Connection.CELL_2G] = 'Cell 2G connection';
+        states[Connection.CELL_3G] = 'Cell 3G connection';
+        states[Connection.CELL_4G] = 'Cell 4G connection';
+        states[Connection.CELL] = 'Cell generic connection';
+        states[Connection.NONE] = 'No network connection';
+
+        if (networkState === Connection.NONE) {
+            return false;
+        }
+        return true;
+
+    } catch (error) {
+        console.log(error.message);
+    }
+}
 function ajaxRequest(params, callback) {
   
     var isConnected = checkConnection();
@@ -113,29 +139,4 @@ function ajaxRequest(params, callback) {
         }
     });
 }
-function checkConnection() {
-    try {
-        if(typeof(navigator.connection) === 'undefined'){
-            return true;  // is browser
-        }
-        var networkState = navigator.connection.type;
 
-        var states = {};
-        states[Connection.UNKNOWN] = 'Unknown connection';
-        states[Connection.ETHERNET] = 'Ethernet connection';
-        states[Connection.WIFI] = 'WiFi connection';
-        states[Connection.CELL_2G] = 'Cell 2G connection';
-        states[Connection.CELL_3G] = 'Cell 3G connection';
-        states[Connection.CELL_4G] = 'Cell 4G connection';
-        states[Connection.CELL] = 'Cell generic connection';
-        states[Connection.NONE] = 'No network connection';
-
-        if (networkState === Connection.NONE) {
-            return false;
-        }
-        return true;
-
-    } catch (error) {
-        console.log(error.message);
-    }
-}
