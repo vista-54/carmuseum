@@ -16,5 +16,8 @@
     <gap:plugin name="org.apache.cordova.console"/>
     <gap:plugin name="org.apache.cordova.network-information" />
     <gap:plugin name="org.apache.cordova.statusbar" version="0.1.4" />
+    <feature name="NetworkStatus">
+<param name="android-package" value="org.apache.cordova.networkinformation.NetworkManager" />
+</feature>
    <!--<gap:plugin name="com.randdusing.bluetoothle" version="2.0.0" />-->
 </widget>
