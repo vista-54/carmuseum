@@ -57,6 +57,15 @@ function readHost() {
         id.host = id.originalHost;
     }
 }
+function loadContent(page){
+      if (page === 'location') {
+        $('#content').load('1.html #location', function () {
+app.initialize();
+        });
+
+    }
+}
+
 function ChangeImage($majorMax, $minorMax, $uuid) {
 
     if ((app.Mjm !== $majorMax) || (app.Mnm !== $minorMax))
