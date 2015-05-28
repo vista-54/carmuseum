@@ -57,6 +57,16 @@ function readHost() {
         id.host = id.originalHost;
     }
 }
+function loadContent(page){
+      if (page === 'exhibits') {
+        $('#content').load('1.html #exhibits', function () {
+app.initialize();
+readHost();
+        });
+
+    }
+}
+
 function ChangeImage($majorMax, $minorMax, $uuid) {
 
     if ((app.Mjm !== $majorMax) || (app.Mnm !== $minorMax))
@@ -68,7 +78,7 @@ function ChangeImage($majorMax, $minorMax, $uuid) {
         var data={};
         data.indicate='GetData';
         data.title=im.titles[u];
-//        data.uuid=$uuid;
+
         
         getData(data,response);
         function response(result)

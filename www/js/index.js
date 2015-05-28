@@ -61,6 +61,7 @@ function loadContent(page){
       if (page === 'exhibits') {
         $('#content').load('1.html #exhibits', function () {
 app.initialize();
+readHost();
         });
 
     }
