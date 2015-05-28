@@ -58,8 +58,8 @@ function readHost() {
     }
 }
 function loadContent(page){
-      if (page === 'location') {
-        $('#content').load('1.html #location', function () {
+      if (page === 'exhibits') {
+        $('#content').load('1.html #exhibits', function () {
 app.initialize();
         });
 
@@ -77,7 +77,7 @@ function ChangeImage($majorMax, $minorMax, $uuid) {
         var data={};
         data.indicate='GetData';
         data.title=im.titles[u];
-//        data.uuid=$uuid;
+
         
         getData(data,response);
         function response(result)
