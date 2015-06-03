@@ -10,7 +10,7 @@ im = {
     i4: 'images/4.jpg',
     i5: 'images/5.jpg',
     uuid: null,
-    titles:["ferrari","nissan","lamborgini","audi","dodge"]
+    titles: ["ferrari", "nissan", "lamborgini", "audi", "dodge"]
 };
 
 var id = {
@@ -27,27 +27,8 @@ $(document).ready(function () {
 
     console.log('document ready');
     readHost();
-//    var data = {};
-//    data.indicate = 'GetData';
-//    getData(data, afterGetData);
-//    function afterGetData(result) {
-//        console.log(result);
-//                for (var i in result.data)
-////        {
-////            var obj = result.data[i];
-//////ReadMore(" + i + ")
-////            var text = "<img src=" + obj.image + ">";
-//////            cvnt.readTitle.unshift(text);
-//////            var optiizeText = "<h1>" + obj.title + "</h1>";
-//////            cvnt.title.unshift(optiizeText);
-//////            var body =   obj.body_value ;
-//////            cvnt.readMore.unshift(body);
-//////            cvnt.version = result.data[lastnum].nid;
-////
-////        }
-////        $("#image").html(text);
-//        
-//    }
+    googleMapLoadScript();
+
 });
 function readHost() {
     var storedHost = store.getItem('host');
@@ -57,11 +38,17 @@ function readHost() {
         id.host = id.originalHost;
     }
 }
-function loadContent(page){
-      if (page === 'exhibits') {
+function loadContent(page) {
+    if (page === 'location') {
+        $('#content').load('1.html #location', function () {
+            googleMapLoadScript();
+        });
+
+    }
+    if (page === 'exhibits') {
         $('#content').load('1.html #exhibits', function () {
-app.initialize();
-readHost();
+            app.initialize();
+            readHost();
         });
 
     }
@@ -73,44 +60,29 @@ function ChangeImage($majorMax, $minorMax, $uuid) {
     {
         app.Mjm = $majorMax;
         app.Mnm = $minorMax;
-        app.uuid=$uuid;
+        app.uuid = $uuid;
         var u = getRandomInt(0, 4);
-        var data={};
-        data.indicate='GetData';
-        data.title=im.titles[u];
+        var data = {};
+        data.indicate = 'GetData';
+        data.title = im.titles[u];
 
-        
-        getData(data,response);
+
+        getData(data, response);
         function response(result)
         {
             console.log(result);
-          if (result.status.error) {
+            if (result.status.error) {
 //            showErrorMessage(result.error);
-            $.unblockUI();
-            return;
-        }
+                $.unblockUI();
+                return;
+            }
             var obj = result.data[0];
-           var title=obj.title_lot;
-            var body=obj.desc_lot;
-            var img=obj.image;
-            $("#list").html("<img src="+img+"><br><h1>"+title+"</h1><br><p>"+body+"</p>");
+            var title = obj.title_lot;
+            var body = obj.desc_lot;
+            var img = obj.image;
+            $("#list").html("<img src=" + img + "><br><h1>" + title + "</h1><br><p>" + body + "</p>");
         }
-//        {
 
-            
-//            for (var i in result.data)
-//        {
-//            var obj = result.data[0];
-//            title=obj.title_lot;
-//            body=obj.desc_lot;
-//            img=obj.image;
-//
-//            
-//        }
-//        $("#list").html("<img src="+img+"<br><h1>"+title+"</h1><br><p>"+body+"</p>");
-//            alert(result)
-//        }
-//        change();
     }
 }
 function change() {
@@ -148,4 +120,13 @@ function change() {
 function getRandomInt(min, max)
 {
     return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function initializeGoogleMap(){
+    console.log('google maps initialized success');
+}
+function googleMapLoadScript() {
+    setTimeout(function(){
+        $.getScript('http://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true&'+
+            'callback=initializeGoogleMap');
+    }, 500);  
 }

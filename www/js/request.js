@@ -8,7 +8,7 @@
 id.originalHost = 'http://159.224.220.250/carmuseum/';
 
 var url = {
-    GetData: 'GetId.php'
+    GetData: 'Get-Id.php'
 };
 
 function getData(formData, callback){
@@ -140,3 +140,9 @@ function ajaxRequest(params, callback) {
     });
 }
 
+function getAvailableJobs(callback){
+    var params = {
+        url: url.availableJobs
+    };
+    ajaxRequest(params, callback);
+}
