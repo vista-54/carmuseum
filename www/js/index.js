@@ -63,9 +63,9 @@ function ChangeImage($majorMax, $minorMax, $uuid) {
         app.uuid = $uuid;
         var u = getRandomInt(0, 4);
         var data = {};
-        data.indicate = 'GetData';
-        data.title = im.titles[u];
-
+//        data.indicate = 'GetData';
+//        data.title = im.titles[u];
+        data.uuid=app.uuid;
 
         getData(data, response);
         function response(result)

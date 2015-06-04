@@ -5,10 +5,10 @@
  */
 
 
-id.originalHost = 'http://159.224.220.250/carmuseum/';
+id.originalHost = 'http://carmuseumapi/backend/';
 
 var url = {
-    GetData: 'Get-Id.php'
+    GetData: 'api/GetByUrlExhibits'
 };
 
 function getData(formData, callback){
