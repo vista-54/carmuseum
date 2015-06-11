@@ -11,8 +11,7 @@
 //  var max=-100;
 
 var app = {
-    Mjm:0,
-    Mnm:0,
+
     uuid:0
 };
 //alert("start");
@@ -43,8 +42,7 @@ app.initialize = function ()
 
 function onDeviceReady()
 {
-//    alert("dR");
-    // Specify a shortcut for the location manager holding the iBeacon functions.
+
     window.locationManager = cordova.plugins.locationManager;
 //    alert("start scan");
     // Start tracking beacons!
@@ -139,22 +137,25 @@ function displayBeaconList()
     $('#info').empty();
     
     var timeNow = Date.now();
-    var rM=-100;
-    var majorMax=0;
-    var minorMax=0;
-    var uuid=0;
+    
+    var rM=-100;//min value of rssi
+//    var majorMax=0;//
+//    var minorMax=0;
+    var uuid=0;//uuid start =0
     // Update beacon list.
       $.each(beacons, function (key, beacon)
     {
+        //The cycle find max value of rssi and get this uuid.
         if(beacon.rssi>rM)
         {
             rM=beacon.rssi;
-            majorMax=beacon.major;
-            minorMax=beacon.minor;
+//            majorMax=beacon.major;
+//            minorMax=beacon.minor;
             uuid=beacon.uuid;
         }
     });
-     ChangeImage(majorMax,minorMax,uuid);
+    //function changeInformation
+     FindBeaconInDataBase(uuid);
     $.each(beacons, function (key, beacon)
     {
 
@@ -179,8 +180,8 @@ function displayBeaconList()
                     + 'Proximity: ' + beacon.proximity + '<br />'
                     + 'RSSI: ' + beacon.rssi + '<br />'
                     + 'RSSI-maX: ' + rM + '<br />'
-                    + 'Max major:' + majorMax + '<br/>'
-                    + 'Max minor:' + minorMax + '<br/>'
+//                    + 'Max major:' + majorMax + '<br/>'
+//                    + 'Max minor:' + minorMax + '<br/>'
                     + '<div style="background:rgb(255,128,64);height:20px;width:'
                     + rssiWidth + '%;"></div>'
                     + '</li>'
@@ -197,4 +198,4 @@ function displayBeaconList()
 //	return app;
 //};
 
-app.initialize();
+//app.initialize();
