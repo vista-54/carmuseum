@@ -5,7 +5,9 @@
  */
 im = {
 //    uuid: null,
-    readyCounter: 0
+    readyCounter: 0,
+    p:null,
+    uuid:null
 };
 
 var id = {
@@ -58,17 +60,31 @@ function loadContent(page) {
     if (page === 'location') {
         $('#content').load('1.html #location', function () {
             googleMapLoadScript();
+//            createMap();
         });
 
     }
     if (page === 'exhibits') {
         $('#content').load('1.html #exhibits', function () {
+                     im.uuid=0;
             app.initialize();
+//            im.p='ex';
 //            testAPIController();
           
         });
 
     }
+    if (page === 'menu') {
+        $('#content').load('index.html #menu', function () {
+//            im.p='menu';
+   
+//            app.initialize();
+//            testAPIController();
+          
+        });
+
+    }
+    
 }
 //function  testAPIController(){
 //    var data={};
@@ -83,17 +99,17 @@ function loadContent(page) {
 //}
 
 function FindBeaconInDataBase($uuid) {
-
-    if (app.uuid != $uuid)
+    
+    if (im.uuid != $uuid)
     {
 //        app.Mjm = $majorMax;
 //        app.Mnm = $minorMax;
-        app.uuid = $uuid;
+        im.uuid = $uuid;
 //        var u = getRandomInt(0, 4);
         var data = {};
 //        data.indicate = 'GetData';
 //        data.title = im.titles[u];
-        data.uuid = app.uuid;
+        data.uuid = im.uuid;
 //bodyHeight = document.body.offsetHeight;
 //    bodyWidth = document.body.offsetWidth;
         getData(data, response);
@@ -177,6 +193,7 @@ function googleMapLoadScript() {
 function getCurrentPosition(callback) {
     //if(! isDeviceReady() ){ return false;}
     //alert('buildJobsNearbyTabshowJobsNearbyTab() called  \n'+ isDeviceReady() );
+    console.log("getCurrentPosition");
     navigator.geolocation.getCurrentPosition(
             function (position) {
                 callback({status: 'success', position: position.coords});
@@ -188,7 +205,7 @@ function getCurrentPosition(callback) {
 }
 
 function createMap() {
-
+    console.log("mapcreate");
     var position = null;
 
     var afterGettingPosition = function (result) {

@@ -12,15 +12,23 @@ and open the template in the editor.
     </head>
     <body>
         <div id="exhibits">
+            
+        <header class="header">
+            <strong>Carmuseum</strong>
+            <a class="top_menu" onclick="loadContent('menu');"><i class="fa fa-arrow-left"></i></a>
+        </header>
             <div id="list"></div>
             <!--<div id="found-beacons"></div>-->
         </div>
         <div id="location">
+            
+        <header class="header">
+            <strong>Carmuseum</strong>
+            <a class="top_menu" onclick="loadContent('menu');"><i class="fa fa-arrow-left"></i></a>
+        </header>
             <div id="museum-map" style="width: 300px; height: 300px;">museum-map</div>
-            <li onclick="createMap();">
+            <button onclick="createMap()">Create Map</button>
 
-                <span> loc </span>
-            </li>
         </div>
 
     </body>
