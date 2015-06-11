@@ -15,10 +15,6 @@
                         {
                             "xml": "<feature name=\"LocationManager\"><param name=\"android-package\" value=\"com.unarin.cordova.beacon.LocationManager\" /></feature>",
                             "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"NetworkStatus\"><param name=\"android-package\" value=\"org.apache.cordova.networkinformation.NetworkManager\" /></feature>",
-                            "count": 1
                         }
                     ]
                 }
@@ -41,7 +37,11 @@
                     ],
                     "/*": [
                         {
-                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />",
+                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />",
                             "count": 1
                         }
                     ],
@@ -70,7 +70,7 @@
         "com.unarin.cordova.beacon": {
             "PACKAGE_NAME": "com.pixelsgo.carmuseum"
         },
-        "cordova-plugin-network-information": {
+        "cordova-plugin-geolocation": {
             "PACKAGE_NAME": "com.pixelsgo.carmuseum"
         }
     },
