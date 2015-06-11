@@ -70,6 +70,15 @@ function loadContent(page) {
         });
 
     }
+    if (page === 'menu') {
+        $('#content').load('index.html #menu', function () {
+//            app.initialize();
+//            testAPIController();
+          
+        });
+
+    }
+    
 }
 //function  testAPIController(){
 //    var data={};
