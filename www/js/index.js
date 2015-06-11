@@ -58,6 +58,7 @@ function loadContent(page) {
     if (page === 'location') {
         $('#content').load('1.html #location', function () {
             googleMapLoadScript();
+//            createMap();
         });
 
     }
@@ -188,7 +189,7 @@ function getCurrentPosition(callback) {
 }
 
 function createMap() {
-
+    console.log("mapcreate");
     var position = null;
 
     var afterGettingPosition = function (result) {
