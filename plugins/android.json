@@ -35,16 +35,7 @@
                             "count": 1
                         }
                     ],
-                    "/*": [
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\" />",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />",
-                            "count": 1
-                        }
-                    ],
+                    "/*": [],
                     "/manifest/application": [
                         {
                             "xml": "<receiver android:name=\"org.altbeacon.beacon.startup.StartupBroadcastReceiver\"><intent-filter><action android:name=\"android.intent.action.BOOT_COMPLETED\" /><action android:name=\"android.intent.action.ACTION_POWER_CONNECTED\" /><action android:name=\"android.intent.action.ACTION_POWER_DISCONNECTED\" /></intent-filter></receiver>",
@@ -68,9 +59,6 @@
             "PACKAGE_NAME": "com.pixelsgo.carmuseum"
         },
         "com.unarin.cordova.beacon": {
-            "PACKAGE_NAME": "com.pixelsgo.carmuseum"
-        },
-        "cordova-plugin-geolocation": {
             "PACKAGE_NAME": "com.pixelsgo.carmuseum"
         }
     },

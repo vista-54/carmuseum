@@ -84,6 +84,16 @@ function loadContent(page) {
         });
 
     }
+    if (page === 'navi') {
+        $('#content').load('index.html #menu', function () {
+//            im.p='menu';
+   
+//            app.initialize();
+//            testAPIController();
+          
+        });
+
+    }
     
 }
 //function  testAPIController(){
@@ -270,12 +280,18 @@ function drawMap(fromPosition, toPosition) {
 
 }
 //========================Location END==========================================
-IndoorNav.init('APIKEY', 'BUILDINGID');
 
+
+//=============================Indoor init======================================
+function indoorInit(){
+    IndoorNav.init('APIKEY', 'BUILDINGID');
+    
+}
+
+IndoorNav.init('APIKEY', 'BUILDINGID');
 $(window).unload(function() {
   IndoorNav.destruct();
 });
-
 
 IndoorNav = {
 
@@ -298,3 +314,4 @@ IndoorNav = {
         }
     }
 };
+//==========================================Init END============================

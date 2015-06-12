@@ -54,8 +54,7 @@ module.exports.metadata =
 // TOP OF METADATA
 {
     "com.evothings.ble": "0.0.1",
-    "com.unarin.cordova.beacon": "3.3.0",
-    "cordova-plugin-geolocation": "1.0.1-dev"
+    "com.unarin.cordova.beacon": "3.3.0"
 }
 // BOTTOM OF METADATA
 });
