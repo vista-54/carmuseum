@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+var directionsService, map;
 im = {
 //    uuid: null,
     readyCounter: 0,
-    p:null,
-    uuid:null
+    p: null,
+    uuid: null
 };
 
 var id = {
@@ -66,35 +67,35 @@ function loadContent(page) {
     }
     if (page === 'exhibits') {
         $('#content').load('1.html #exhibits', function () {
-                     im.uuid=0;
+            im.uuid = 0;
             app.initialize();
 //            im.p='ex';
 //            testAPIController();
-          
+
         });
 
     }
     if (page === 'menu') {
         $('#content').load('index.html #menu', function () {
 //            im.p='menu';
-   
+
 //            app.initialize();
 //            testAPIController();
-          
+
         });
 
     }
     if (page === 'navi') {
         $('#content').load('index.html #menu', function () {
 //            im.p='menu';
-   
+
 //            app.initialize();
 //            testAPIController();
-          
+
         });
 
     }
-    
+
 }
 //function  testAPIController(){
 //    var data={};
@@ -109,7 +110,7 @@ function loadContent(page) {
 //}
 
 function FindBeaconInDataBase($uuid) {
-    
+
     if (im.uuid != $uuid)
     {
 //        app.Mjm = $majorMax;
@@ -126,15 +127,13 @@ function FindBeaconInDataBase($uuid) {
         function response(result)
         {
             console.log(result);
-                 var frameHtml = '<iframe id="main-frame" src="' + result.data + '" ' +
-                'height="' + 450 + '" ' +
-                'name="main-frame" class="main-frame " ' +
-               
-               
-                'scrolling="yes" ' +
-                'wmode="Opaque" ' +
-                'noresize="noresize" '+
-                '  </iframe>';
+            var frameHtml = '<iframe id="main-frame" src="' + result.data + '" ' +
+                    'height="' + 450 + '" ' +
+                    'name="main-frame" class="main-frame " ' +
+                    'scrolling="yes" ' +
+                    'wmode="Opaque" ' +
+                    'noresize="noresize" ' +
+                    '  </iframe>';
 //            if (result.status.error) {
 ////            showErrorMessage(result.error);
 //                $.unblockUI();
@@ -239,10 +238,11 @@ function createMap() {
 
 function drawMap(fromPosition, toPosition) {
     var mapContainer = $('#museum-map').get(0);
-
+    var trackCoords = [];
     var fromPos = new google.maps.LatLng(fromPosition.latitude, fromPosition.longitude);
     var toPos = new google.maps.LatLng(toPosition.latitude, toPosition.longitude);
-
+    trackCoords.push(fromPos);
+    trackCoords.push(toPos);
 
     var mapOptions = {
         zoom: 4,
@@ -251,8 +251,8 @@ function drawMap(fromPosition, toPosition) {
     };
 
 
-    var map = new google.maps.Map(mapContainer, mapOptions);
-
+    map = new google.maps.Map(mapContainer, mapOptions);
+    directionsService = new google.maps.DirectionsService();
     var markerCurrPos = new google.maps.Marker({
         position: fromPos,
         map: map,
@@ -275,43 +275,82 @@ function drawMap(fromPosition, toPosition) {
             return false;
         }
     });
+    requestDirections(fromPos, toPos, {strokeColor: "#ff0000"});
+//    map.setCenter(trackCoords[0]);
+//var trackPath = new google.maps.Polyline({
+//        path: trackCoords ,
+//        strokeColor: "#FF0000",
+//        strokeOpacity: 1.0,
+//        strokeWeight: 4
+//    });
+//
+//trackPath.setMap(map);
+//    addMarker(trackCoords[0],"Start");
+//    addMarker(trackCoords[trackCoords.length-1],"finish");
+}
+function requestDirections(start, end, polylineOpts) {
+    directionsService.route({
+        origin: start,
+        destination: end,
+        travelMode: google.maps.DirectionsTravelMode.DRIVING
+    }, function (result) {
+        renderDirections(result, polylineOpts);
+    });
+}
+function renderDirections(result, polylineOpts) {
+    var directionsRenderer;
+    var rendererOptions = {
+        map: map,
+        suppressMarkers: true //disable default markers
+    };
+    directionsRenderer = new google.maps.DirectionsRenderer(rendererOptions);
 
+    directionsRenderer.setMap(map);
 
+    if (polylineOpts) {
+        directionsRenderer.setOptions({
+            polylineOptions: polylineOpts
+        });
+    }
 
+    directionsRenderer.setDirections(result);
 }
 //========================Location END==========================================
 
 
 //=============================Indoor init======================================
-function indoorInit(){
-    IndoorNav.init('APIKEY', 'BUILDINGID');
-    
-}
 
-IndoorNav.init('APIKEY', 'BUILDINGID');
-$(window).unload(function() {
-  IndoorNav.destruct();
-});
 
 IndoorNav = {
-
-    init: function(apikey, building) {
+    init: function (apikey, building) {
         IndoorNav.indoors = new indoors(apikey, building);
-        IndoorNav.indoors.onmessage = function(e) {
-            console.log('MESSAGE: ' + e.data.indoorsEvent + ' | DATA: ' + e.data.indoorsData) ; //TODO
+        IndoorNav.indoors.onmessage = function (e) {
+            console.log('MESSAGE: ' + e.data.indoorsEvent + ' | DATA: ' + e.data.indoorsData); //TODO
         };
-        IndoorNav.indoors.onsuccess = function(e) {
+        IndoorNav.indoors.onsuccess = function (e) {
             console.log('SUCCESS: ' + e.data.indoorsEvent + ' | DATA: ' + e.data.indoorsData); //TODO
         };
-        IndoorNav.indoors.onerror = function(e) {
-            console.log('ERROR: ' + e.data.indoorsEvent + ' | DATA: ' + e.data.indoorsData) ; //TODO
+        IndoorNav.indoors.onerror = function (e) {
+            console.log('ERROR: ' + e.data.indoorsEvent + ' | DATA: ' + e.data.indoorsData); //TODO
         };
     },
-
-    destruct: function() {
-        if(typeof IndoorNav.indoors != 'undefined') {
+    destruct: function () {
+        if (typeof IndoorNav.indoors != 'undefined') {
             IndoorNav.indoors.destruct();
         }
     }
 };
+
+
+function indoorInit() {
+    //IndoorNav.init('APIKEY', 'BUILDINGID');
+    IndoorNav.init('APIKEY', '123456');
+
+}
+
+//IndoorNav.init('APIKEY', 'BUILDINGID');
+$(window).unload(function () {
+    IndoorNav.destruct();
+});
+
 //==========================================Init END============================

@@ -22,9 +22,10 @@ import com.customlbs.library.model.Building;
 import com.customlbs.library.model.Floor;
 import com.customlbs.library.model.Zone;
 import com.customlbs.library.callbacks.IndoorsServiceCallback;
+import com.customlbs.library.callbacks.LoadingBuildingStatus;
 import com.customlbs.shared.Coordinate;
 
-public class indoors extends CordovaPlugin implements IndoorsLocationListener {
+public class indoors extends CordovaPlugin implements IndoorsLocationListener {  
 
 	private CallbackContext callbackContext;
 	private Indoors indoors;
@@ -53,7 +54,7 @@ public class indoors extends CordovaPlugin implements IndoorsLocationListener {
 //            	    params.setTrackingInterval(10000);				// how often data is queued up to be sent to the server later (see BatchPushInterval)
 //            	    params.setPositionCalculationInterval(1000);	// how often to calculate a position internally
 //            	    params.setPositionUpdateInterval(0);			// how often a calculated position (see PositionCalculationInterval) is sent to the UI
-               	    indoors.setLocatedCloudBuilding(buildingId, params);
+               	    indoors.setLocatedCloudBuilding(buildingId, params, true);
             	    indoors.registerLocationListener(self);
             	    
             		sendResult("connected", "success", "success", PluginResult.Status.OK);
@@ -153,10 +154,10 @@ public class indoors extends CordovaPlugin implements IndoorsLocationListener {
 		catch(Exception e) {}
 	}
 
-	@Override
-	public void loadingBuilding(int progress) {
-		sendResult("loadingBuilding", String.valueOf(progress), "success", PluginResult.Status.OK);
-	}
+//	@Override
+//	public void loadingBuilding(int progress) {
+//		sendResult("loadingBuilding", String.valueOf(progress), "success", PluginResult.Status.OK);
+//	}
 
 	@Override
 	public void orientationUpdated(float orientation) {
@@ -208,4 +209,10 @@ public class indoors extends CordovaPlugin implements IndoorsLocationListener {
 	private Context getApplicationContext() {
 		return this.cordova.getActivity().getApplicationContext();
 	}
+
+    @Override
+    public void loadingBuilding(LoadingBuildingStatus lbs) {
+        sendResult("loadingBuilding", String.valueOf(lbs.getProgress()), "success", PluginResult.Status.OK);
+    }
+    
 }
