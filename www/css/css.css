@@ -59,11 +59,11 @@ section{
 }
 #menu{
     text-align: center;
-    
+    font-size: 20px;
 }
 #menu li{
     list-style: none;
-    padding: 20px 0 0 0;
+    padding: 20px 52px 0 0;
 }
 
 .btn{
@@ -90,4 +90,7 @@ section{
     font-weight: bold;
     font-size: 100%;
 
+}
+#location{
+    height: 100%;
 }

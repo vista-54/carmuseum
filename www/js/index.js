@@ -61,7 +61,11 @@ function loadContent(page) {
     if (page === 'location') {
         $('#content').load('1.html #location', function () {
             googleMapLoadScript();
-//            createMap();
+//                setTimeout(function () {
+
+//        createMap();
+//    }, 500);
+            
         });
 
     }
@@ -191,6 +195,7 @@ function FindBeaconInDataBase($uuid) {
 //==================Location==========================
 function initializeGoogleMap() {
     console.log('google maps initialized success');
+    createMap();
 }
 function googleMapLoadScript() {
     setTimeout(function () {
@@ -203,6 +208,7 @@ function getCurrentPosition(callback) {
     //if(! isDeviceReady() ){ return false;}
     //alert('buildJobsNearbyTabshowJobsNearbyTab() called  \n'+ isDeviceReady() );
     console.log("getCurrentPosition");
+//    googleMapLoadScript();
     navigator.geolocation.getCurrentPosition(
             function (position) {
                 callback({status: 'success', position: position.coords});

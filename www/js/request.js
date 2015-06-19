@@ -10,7 +10,6 @@ id.originalHost = 'http://159.224.220.250/carmuseumAPI/backend/';
 var url = {
     GetData: 'web/index.php?r=api%2Fget-by-url-exhibits'
 };
-
 function getData(formData, callback){
     var urlToUpload = id.host + url.GetData;
     var params = {

@@ -70,8 +70,8 @@ module.exports.metadata =
 {
     "com.evothings.ble": "0.0.1",
     "com.unarin.cordova.beacon": "3.3.0",
-    "cordova-plugin-geolocation": "1.0.1-dev",
-    "cordova-plugin-network-information": "1.0.1-dev"
+    "cordova-plugin-geolocation": "1.0.2-dev",
+    "cordova-plugin-network-information": "1.0.2-dev"
 }
 // BOTTOM OF METADATA
 });
