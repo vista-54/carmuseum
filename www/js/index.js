@@ -8,7 +8,9 @@ im = {
 //    uuid: null,
     readyCounter: 0,
     p: null,
-    uuid: null
+    uuid: null,
+    power: 0,
+    scannedBeakonsArr:[]
 };
 
 var id = {
@@ -65,12 +67,13 @@ function loadContent(page) {
 
 //        createMap();
 //    }, 500);
-            
+
         });
 
     }
     if (page === 'exhibits') {
         $('#content').load('1.html #exhibits', function () {
+            //calculateAccuracy();//
             im.uuid = 0;
             app.initialize();
 //            im.p='ex';
@@ -101,6 +104,10 @@ function loadContent(page) {
     }
 
 }
+//function calculateAccuracy() {
+//    alert("1m");
+//    add();
+//}
 //function  testAPIController(){
 //    var data={};
 //   data.id="test";
