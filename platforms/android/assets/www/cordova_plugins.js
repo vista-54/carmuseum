@@ -48,13 +48,30 @@ module.exports = [
         "file": "plugins/com.unarin.cordova.beacon/www/model/BeaconRegion.js",
         "id": "com.unarin.cordova.beacon.BeaconRegion",
         "runs": true
+    },
+    {
+        "file": "plugins/cordova-plugin-network-information/www/network.js",
+        "id": "cordova-plugin-network-information.network",
+        "clobbers": [
+            "navigator.connection",
+            "navigator.network.connection"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-network-information/www/Connection.js",
+        "id": "cordova-plugin-network-information.Connection",
+        "clobbers": [
+            "Connection"
+        ]
     }
 ];
 module.exports.metadata = 
 // TOP OF METADATA
 {
     "com.evothings.ble": "0.0.1",
-    "com.unarin.cordova.beacon": "3.3.0"
+    "com.unarin.cordova.beacon": "3.3.0",
+    "cordova-plugin-geolocation": "1.0.2-dev",
+    "cordova-plugin-network-information": "1.0.2-dev"
 }
 // BOTTOM OF METADATA
 });

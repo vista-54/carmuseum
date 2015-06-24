@@ -219,20 +219,26 @@ function displayBeaconList()
 //            app.rssi=beacon.rssi;
 //            var ratio=-70-beacon.rssi;
 //            var distance=beacon.rssi*1/-84;
-        var distance=0;
-            if(beacon.rssi==0){
-                distance=-1;
-            }
-            var ratio=beacon.rssi*1/-84;
-            if(ratio<1){
-                distance=Math.pow(ratio,10);
-            }
-            else{
-                distance= 0.89976*Math.pow(ratio,7.7095)+0.111;
-            }
+//        var distance=0;
+//            if(beacon.rssi==0){
+//                distance=-1;
+//            }
+//            var ratio=beacon.rssi*1/-84;
+//            if(ratio<1){
+//                distance=Math.pow(ratio,10);
+//            }
+//            else{
+//                distance= 0.89976*Math.pow(ratio,7.7095)+0.111;
+//            }
 //               var d=(beacon.rssi*(-10*2)/-84)-Math.log(1);
 //            distance=Math.log((d*(-1)));
-           
+            var distance=0;
+            if(beacon.accuracy<1){
+               distance=beacon.accuracy;
+            }
+           if(beacon.accuracy>1){
+               distance=beacon.accuracy*1.2;
+           }
            // distance=Math.pow(10,d);
             var element = $(
                     '<li>'
@@ -242,7 +248,7 @@ function displayBeaconList()
                     + 'Proximity: ' + beacon.proximity + '<br />'
                     + 'RSSI: ' + beacon.rssi + '<br />'
 //                    + 'RSSI-maX: ' + rM + '<br />'
-                    + 'Distance: ' + beacon.accuracy  + '<br />'
+                    + 'Distance: ' + distance  + '<br />'
 //                    + 'Max major:' + majorMax + '<br/>'
 //                    + 'Max minor:' + minorMax + '<br/>'
                     + '<div style="background:rgb(255,128,64);height:20px;width:'
