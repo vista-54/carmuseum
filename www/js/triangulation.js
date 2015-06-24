@@ -6,12 +6,12 @@ var existedBeaconsArr = [
 ];
 
 
-var scannedBeaconsArr = [
-//    //  uuid, major, minor, rssi
-    {uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E', major: '14575', minor: '21386', rssi: -82, accuracy: 2.2 / 2},
-    {uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E', major: '46650', minor: '37051', rssi: -76, accuracy: 1 / 2},
-    {uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E', major: '46609', minor: '33951', rssi: -62, accuracy: 0.44 / 2}
-];
+//var scannedBeaconsArr = [
+////    //  uuid, major, minor, rssi
+//    {uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E', major: '14575', minor: '21386', rssi: -82, accuracy: 2.2 / 2},
+//    {uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E', major: '46650', minor: '37051', rssi: -76, accuracy: 1 / 2},
+//    {uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E', major: '46609', minor: '33951', rssi: -62, accuracy: 0.44 / 2}
+//];
 
 
 function buildBeaconsWithRadiusesArray(scannedBeaconsArr, existedBeaconsArr) {
