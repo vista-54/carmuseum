@@ -340,7 +340,7 @@ function arrayClone( arr ) {
 
 
 
-var beaconsWithRadiuses = buildBeaconsWithRadiusesArray(scannedBeaconsArr, existedBeaconsArr);
-var realPosition = corelateResult(beaconsWithRadiuses);
+//var beaconsWithRadiuses = buildBeaconsWithRadiusesArray(scannedBeaconsArr, existedBeaconsArr);
+//var realPosition = corelateResult(beaconsWithRadiuses);
 //var realPosition = detectRealPosition(beaconsWithRadiuses);
-realPosition;
+//realPosition;

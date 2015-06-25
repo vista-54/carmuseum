@@ -33,7 +33,7 @@ var regions =
 var beacons = {};
 
 scannedBeaconsArr = [];
-var avgArrayCount = 18;
+var avgArrayCount = 12;
 
 // Timer that displays list of beacons.
 var updateTimer = null;
@@ -53,7 +53,7 @@ function onDeviceReady()
     startScan();
 
     // Display refresh timer.
-    updateTimer = setInterval(displayBeaconList, 500);
+    updateTimer = setInterval(displayBeaconList, 1000);
 }
 
 function startScan()
@@ -66,6 +66,7 @@ function startScan()
 
     delegate.didRangeBeaconsInRegion = function (pluginResult)
     {
+        
         var maxRSSI = -100;
         for (var i in pluginResult.beacons)
         {
@@ -179,6 +180,8 @@ function deleteLostBeaconsFromScannedArray() {
         }
         if(!isInAlives){
             scannedBeaconsArr.splice(i,1);
+        }else{
+            aaaaa=1
         }
     }
 }
@@ -291,8 +294,11 @@ function displayBeaconList()
         }
 
     });
+    
+    //beacons={};
     var beaconsWithRadiuses = buildBeaconsWithRadiusesArray(scannedBeaconsArr, existedBeaconsArr);
     var realPosition = corelateResult(beaconsWithRadiuses);
+    
     $('#cordinate').html(realPosition.lat + " " + realPosition.lng);
 }
 
