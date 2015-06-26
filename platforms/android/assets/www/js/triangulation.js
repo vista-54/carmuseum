@@ -77,9 +77,12 @@ function detectRealPosition(beaconsWithRadiuses) {
     var interDots = [];
     var lines = [];
 
+    if(beaconsWithRadiuses.length==0){
+        return null;
+    }
 
     //only one beacon
-    if (lines.length == 0) {
+    if (beaconsWithRadiuses.length == 0) {
         var beacon = beaconsWithRadiuses[0];
         var dot = {
             lng: beacon.lat,

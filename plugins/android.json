@@ -15,6 +15,10 @@
                         {
                             "xml": "<feature name=\"LocationManager\"><param name=\"android-package\" value=\"com.unarin.cordova.beacon.LocationManager\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"NetworkStatus\"><param name=\"android-package\" value=\"org.apache.cordova.networkinformation.NetworkManager\" /></feature>",
+                            "count": 1
                         }
                     ],
                     "plugins": [
@@ -41,7 +45,20 @@
                             "count": 1
                         }
                     ],
-                    "/*": [],
+                    "/*": [
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />",
+                            "count": 1
+                        }
+                    ],
                     "/manifest/application": [
                         {
                             "xml": "<receiver android:name=\"org.altbeacon.beacon.startup.StartupBroadcastReceiver\"><intent-filter><action android:name=\"android.intent.action.BOOT_COMPLETED\" /><action android:name=\"android.intent.action.ACTION_POWER_CONNECTED\" /><action android:name=\"android.intent.action.ACTION_POWER_DISCONNECTED\" /></intent-filter></receiver>",
@@ -65,6 +82,12 @@
             "PACKAGE_NAME": "com.pixelsgo.carmuseum"
         },
         "com.unarin.cordova.beacon": {
+            "PACKAGE_NAME": "com.pixelsgo.carmuseum"
+        },
+        "cordova-plugin-geolocation": {
+            "PACKAGE_NAME": "com.pixelsgo.carmuseum"
+        },
+        "cordova-plugin-network-information": {
             "PACKAGE_NAME": "com.pixelsgo.carmuseum"
         }
     },
