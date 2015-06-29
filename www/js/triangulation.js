@@ -1,8 +1,12 @@
 var existedBeaconsArr = [
     // {name, lat, lng, uid, major, minor}
-    {name: 'mTDB', lat: 0, lng: 0, uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E', major: '14575', minor: '21386'},
-    {name: 'A4xg', lat: 7, lng: 0, uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E', major: '46650', minor: '37051'},
-    {name: 'c5nr', lat: 0, lng: 4.2, uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E', major: '46609', minor: '33951'},
+//    {name: 'mTDB', lat: 0, lng: 0, uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E', major: '14575', minor: '21386'},
+//    {name: 'A4xg', lat: 7, lng: 0, uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E', major: '46650', minor: '37051'},
+//    {name: 'c5nr', lat: 0, lng: 4.2, uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E', major: '46609', minor: '33951'},
+
+    {name: 'mTDB', lat: 49.585966493118995,  lng: 34.546907767653465,  uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E', major: '14575', minor: '21386', height: 1 , level:1 },
+    {name: 'A4xg', lat: 49.58594519167159,   lng: 34.54695001244545,   uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E', major: '46650', minor: '37051', height: 1 , level:1 },
+    {name: 'c5nr', lat: 49.585991272342035,  lng: 34.54693593084812,   uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E', major: '46609', minor: '33951', height: 1 , level:1 },
 ];
 
 
@@ -14,12 +18,7 @@ var existedBeaconsArr = [
 //];
 
 
-//var beaconsWithRadiuses = [
-//    {lng: -2, lat: 3, radius: 4.1},
-//    {lng: 4, lat: 2, radius: 5.8},
-//    //{lng: 4, lat: 2, radius: 7.8},
-//    {lng: 1, lat: 5, radius: 6.32}
-//];
+
 
 function buildBeaconsWithRadiusesArray(scannedBeaconsArr, existedBeaconsArr) {
     var beaconsWithRadiuses = [];
@@ -43,16 +42,31 @@ function buildBeaconsWithRadiusesArray(scannedBeaconsArr, existedBeaconsArr) {
 }
 
 
-function calculateDistanceBetweenTwoDots(P1, P2) {
-    var k1 = Math.abs(P2.lat - P1.lat);
-    var k2 = Math.abs(P2.lng - P1.lng);
-    var dist = Math.sqrt(k1 * k1 + k2 * k2);
-    return dist;
+function calculateDistanceBetweenTwoDots(P1, P2, measure ) {
+    
+    if(measure == 'deg'){
+        var R = 6378.137; // Radius of earth in KM
+        var dLat = (P2.lat - P1.lat) * Math.PI / 180;
+        var dLng = (P2.lng - P1.lng) * Math.PI / 180;
+        var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(P1.lat * Math.PI / 180) * Math.cos(P2.lat * Math.PI / 180) *
+        Math.sin(dLng/2) * Math.sin(dLng/2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        var d = R * c;
+        return d * 1000; // meters
+    }
+    if(measure == 'met'){
+        var k1 = Math.abs(P2.lat - P1.lat);
+        var k2 = Math.abs(P2.lng - P1.lng);
+        var dist = Math.sqrt(k1 * k1 + k2 * k2);
+        return dist;
+    }
+    return null;
 }
 
 
-function findIntersectDotsByTwoCircles(P1, P2) {  //Px{ lat, lng, radius }
-    var l = calculateDistanceBetweenTwoDots(P1, P2);
+function findIntersectDotsByTwoCircles(P1, P2 , measure) {  //Px{ lat, lng, radius }
+    var l = calculateDistanceBetweenTwoDots(P1, P2, measure);
     var R1 = P1.radius;
     var R2 = P2.radius;
 
@@ -73,7 +87,7 @@ function findIntersectDotsByTwoCircles(P1, P2) {  //Px{ lat, lng, radius }
 }
 
 
-function detectRealPosition(beaconsWithRadiuses) {
+function detectRealPosition(beaconsWithRadiuses, measure) {
     var interDots = [];
     var lines = [];
 
@@ -99,7 +113,7 @@ function detectRealPosition(beaconsWithRadiuses) {
     for (var i = 0; i < beaconsWithRadiuses.length; i++) {
         for (var j = i; j < beaconsWithRadiuses.length; j++) {
             if (i != j) {
-                var dotsPair = findIntersectDotsByTwoCircles(beaconsWithRadiuses[i], beaconsWithRadiuses[j]);
+                var dotsPair = findIntersectDotsByTwoCircles(beaconsWithRadiuses[i], beaconsWithRadiuses[j] , measure);
                 if (!isNaN(dotsPair.D1.lat) && !isNaN(dotsPair.D1.lng) && !isNaN(dotsPair.D2.lat) && !isNaN(dotsPair.D2.lng)) {
                     //interDots.push(dotsPair.D1);
                     //interDots.push(dotsPair.D2);
@@ -160,8 +174,8 @@ function detectRealPosition(beaconsWithRadiuses) {
     // get minimal length;
     var nearDots = [];
     for (var i = 0; i < lines.length; i++) {
-        var dot1len = calculateDistanceBetweenTwoDots(intersectDot, lines[i].D1);
-        var dot2len = calculateDistanceBetweenTwoDots(intersectDot, lines[i].D2);
+        var dot1len = calculateDistanceBetweenTwoDots(intersectDot, lines[i].D1, measure);
+        var dot2len = calculateDistanceBetweenTwoDots(intersectDot, lines[i].D2, measure);
         var min = Math.min(dot1len, dot2len);
         var nearDot = dot2len - dot1len >= 0 ? lines[i].D1 : lines[i].D2;
         nearDot.probability = 1 / min;
@@ -231,7 +245,7 @@ function corelateResult(beaconsWithRadiuses) {
             var currRadius = beaconsWithRadiuses[j].radius;
             clonedBeaconsWithRadiuses[j].radius = currRadius * currRadiusKoeficient;
         }
-        var realPosition = detectRealPosition(clonedBeaconsWithRadiuses);
+        var realPosition = detectRealPosition(clonedBeaconsWithRadiuses, 'deg');
         if (realPosition != null && !isNaN(realPosition.probability)) {
             realPosition.radiusKoeficient = currRadiusKoeficient;
             resultArr.push(realPosition);
@@ -303,6 +317,9 @@ function getIntersectDot(line1, line2) {
 //
 //
 //var beaconsWithRadiuses = buildBeaconsWithRadiusesArray(scannedBeaconsArr, existedBeaconsArr);
-//var realPosition = corelateResult(beaconsWithRadiuses);
-////var realPosition = detectRealPosition(beaconsWithRadiuses);
+//var realPosition = corelateResult(beaconsWithRadiuses, 'deg');
+//var realPosition = detectRealPosition(beaconsWithRadiuses, 'deg');
 //realPosition;
+
+
+

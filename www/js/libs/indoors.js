@@ -2,7 +2,7 @@
  	indoo.rs Plugin for cordova.
  */
 
-var indoors = function(apiKey, buildingId) {
+indoors = function(apiKey, buildingId) {
 	this.cordovaRef = window.PhoneGap || window.Cordova || window.cordova; 
 	this.events = [];
 	this.apiKey = apiKey;

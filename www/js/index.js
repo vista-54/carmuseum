@@ -1,8 +1,5 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
+
 var directionsService, map;
 im = {
 //    uuid: null,
@@ -29,27 +26,36 @@ var store = window.localStorage;
 //function addDataToStore() {
 //    store.setItem('UUID', JSON.stringify(id.iBeaconId));
 //}
-document.addEventListener("deviceready", fullReady, false);
+document.addEventListener("deviceready", checkFullReady, false);
 
 $(document).ready(function () {
     console.log('document ready');
 
-    fullReady();
+    checkFullReady();
 
 });
 
-function fullReady() {
+function checkFullReady() {
     im.readyCounter++;
     if (!isMobile) {
         im.readyCounter++;
     }
     if (im.readyCounter === 2) {
         console.log('full ready');
-        readHost();
-
+        fullReady();
     }
 
 }
+
+
+function fullReady(){
+    readHost();
+    
+    googleMapLoadScript();
+    
+}
+
+
 function readHost() {
     var storedHost = store.getItem('host');
     if (storedHost) {
@@ -62,7 +68,7 @@ function readHost() {
 function loadContent(page) {
     if (page === 'location') {
         $('#content').load('1.html #location', function () {
-            googleMapLoadScript();
+            
 //                setTimeout(function () {
 
 //        createMap();
@@ -75,9 +81,9 @@ function loadContent(page) {
         $('#content').load('1.html #exhibits', function () {
             //calculateAccuracy();//
             im.uuid = 0;
-            app.initialize();
 //            im.p='ex';
 //            testAPIController();
+            initIndoorLocation();
 
         });
 
