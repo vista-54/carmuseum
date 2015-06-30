@@ -140,7 +140,13 @@ function startScan()
 
 
         max = maxRSSI;
-        updateIndoorMap(scannedBeaconsArr);
+        var beaconsWithRadiuses = buildBeaconsWithRadiusesArray(scannedBeaconsArr, existedBeaconsArr);
+        var realPosition = corelateResult(beaconsWithRadiuses);
+        updateIndoorMap(beaconsWithRadiuses, realPosition);
+        
+        if (realPosition) {
+            $('#cordinate').html("lat: " + realPosition.lat + "; lng: " + realPosition.lng);
+        }
     };
 
 
@@ -244,7 +250,7 @@ function displayBeaconList()
             // Create tag to display beacon data.
             var element = $(
                     '<li>'
-                    + '<strong>UUID: ' + beacon.uuid + '</strong><br />'
+                    + 'U: ' + beacon.uuid + '<br />'
                     + 'Major: ' + beacon.major + ' &nbsp; &nbsp; '
                     + 'Minor: ' + beacon.minor + '<br />'
                     + 'Proximity: ' + beacon.proximity + '<br />'
@@ -264,10 +270,8 @@ function displayBeaconList()
 
     });
 
-    var beaconsWithRadiuses = buildBeaconsWithRadiusesArray(scannedBeaconsArr, existedBeaconsArr);
-    var realPosition = corelateResult(beaconsWithRadiuses);
 
-    $('#cordinate').html(realPosition.lat + " " + realPosition.lng);
+    
 }
 
 
@@ -277,22 +281,24 @@ var museumPosLatLng = {latitude: 49.586050, longitude: 34.546947}; // todo chang
 
 function initIndoorMap() {
     var position = null;
+    // todo timeout to getting geodata
+//    getCurrentPosition(afterGettingPosition);
+//
+//    function afterGettingPosition(result) {
+//        if (result.status === 'success') {
+//
+//            position = result.position;
+//            console.log(' position.latitude : ' + position.latitude + ';   position.longitude : ' + position.longitude);
+//
+//            drawMap(museumPosLatLng);
+//
+//        } else {
+//            showErrorMessage(eMsg.cannotGetPosition);
+//        }
+//    }
 
-    getCurrentPosition(afterGettingPosition);
+    drawMap(museumPosLatLng);
 
-    function afterGettingPosition(result) {
-        if (result.status === 'success') {
-
-            position = result.position;
-            console.log(' position.latitude : ' + position.latitude + ';   position.longitude : ' + position.longitude);
-
-            drawMap(museumPosLatLng);
-
-        } else {
-            showErrorMessage(eMsg.cannotGetPosition);
-        }
-    }
-    ;
 
 
     function drawMap(position) {
@@ -323,10 +329,19 @@ function updateIndoorMap(scannedBeaconsArr, userPosition) {
                 existedBeacon.circle.setRadius(existedBeacon.radius);
             } else {
                 var beaconPos = new google.maps.LatLng(currBeacon.lat, currBeacon.lng);
+                
+                var markerImage = new google.maps.MarkerImage(
+                        'images/beacon.png',
+                        new google.maps.Size(36, 36),
+                        new google.maps.Point(0, 0),
+                        new google.maps.Point(18, 18)
+                    );
+                
                 var marker = new google.maps.Marker({
                     position: beaconPos,
                     map: indoorMap,
-                    title: currBeacon.name
+                    title: currBeacon.name,
+                    icon: markerImage
                 });
                 var circleOpts = {
                     strokeColor: '#FF0000',
@@ -341,19 +356,34 @@ function updateIndoorMap(scannedBeaconsArr, userPosition) {
                 var circle = new google.maps.Circle(circleOpts);
                 currBeacon.marker = marker;
                 currBeacon.circle = circle;
-                
+
                 beaconsOnMap.push(currBeacon);
             }
+        }
+        if (userPosition) {
             
-            if(userPosOnMap !== null){
+            var userPosLatLng = new google.maps.LatLng(userPosition.lat, userPosition.lng);
+            
+            if (userPosOnMap !== null) {
                 userPosOnMap.avgRadius = userPosition.avgRadius;
                 userPosOnMap.circle.setRadius(userPosition.avgRadius);
-            }else{
-                var userPosLatLng = new google.maps.LatLng(userPosition.lat, userPosition.lng);
+                userPosOnMap.circle.setCenter(userPosLatLng);
+                userPosOnMap.marker.setPosition(userPosLatLng);
+                
+                
+            } else {
+                var markerImage = new google.maps.MarkerImage(
+                        'images/user_position.png',
+                        new google.maps.Size(40, 40),
+                        new google.maps.Point(0, 0),
+                        new google.maps.Point(20, 20)
+                    );
+                
                 var marker = new google.maps.Marker({
                     position: userPosLatLng,
                     map: indoorMap,
-                    title: "My"
+                    title: "My",
+                    icon: markerImage
                 });
                 var circleOpts = {
                     strokeColor: '#0000FF',
@@ -371,9 +401,9 @@ function updateIndoorMap(scannedBeaconsArr, userPosition) {
                 up.circle = circle;
                 userPosOnMap = up;
             }
-
-
         }
+
+
 
 
     }
@@ -385,7 +415,7 @@ function findBeaconInMap(beaconsOnMap, beacon) {
 
     for (var i = 0; i < beaconsOnMap.length; i++) {
         var currScannedBeacon = beaconsOnMap[i];
-        if ((beacon.lat == currScannedBeacon.lat) && (beacon.lng == currScannedBeacon.lng) )
+        if ((beacon.lat == currScannedBeacon.lat) && (beacon.lng == currScannedBeacon.lng))
         {
             return beaconsOnMap[i];
         }
