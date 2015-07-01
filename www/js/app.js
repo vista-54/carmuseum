@@ -11,7 +11,7 @@ var regions =
 // Dictionary of beacons.
 var beacons = {};
 var scannedBeaconsArr = [];
-var avgArrayCount = 12;
+var avgArrayCount = 8;
 
 // Timer that displays list of beacons.
 var updateTimer = null;
@@ -143,6 +143,7 @@ function startScan()
         var beaconsWithRadiuses = buildBeaconsWithRadiusesArray(scannedBeaconsArr, existedBeaconsArr);
         var realPosition = corelateResult(beaconsWithRadiuses);
         updateIndoorMap(beaconsWithRadiuses, realPosition);
+        console.log('------- updateIndoorPeriod----- '+ new Date().getMilliseconds());
         
         if (realPosition) {
             $('#cordinate').html("lat: " + realPosition.lat + "; lng: " + realPosition.lng);
@@ -250,16 +251,17 @@ function displayBeaconList()
             // Create tag to display beacon data.
             var element = $(
                     '<li>'
-                    + 'U: ' + beacon.uuid + '<br />'
-                    + 'Major: ' + beacon.major + ' &nbsp; &nbsp; '
-                    + 'Minor: ' + beacon.minor + '<br />'
-                    + 'Proximity: ' + beacon.proximity + '<br />'
+                    + 'U:' + beacon.uuid + '<br />'
+                    + 'Mj: ' + beacon.major + ' &nbsp; '
+                    + 'Mn: ' + beacon.minor + ' &nbsp; '
+                    //+ 'Prox: ' + beacon.proximity + '<br />'
+                    + 'Dist: ' + beacon.accuracy + '<br />'
                     + 'RSSI: ' + beacon.rssi + ' &nbsp; &nbsp; '
-                    + 'RSSI-maX: ' + rM + '<br />'
+                    + 'RmX: ' + rM + '<br />'
 //                    + 'Max major:' + majorMax + '<br/>'
 //                    + 'Max minor:' + minorMax + '<br/>'
-                    + '<div style="background:rgb(255,128,64);height:20px;width:'
-                    + rssiWidth + '%;"></div>'
+//                    + '<div style="background:rgb(255,128,64);height:20px;width:'
+//                    + rssiWidth + '%;"></div>'
                     + '</li>'
                     );
             $('#warning').remove();
@@ -282,22 +284,21 @@ var museumPosLatLng = {latitude: 49.586050, longitude: 34.546947}; // todo chang
 function initIndoorMap() {
     var position = null;
     // todo timeout to getting geodata
-//    getCurrentPosition(afterGettingPosition);
-//
-//    function afterGettingPosition(result) {
-//        if (result.status === 'success') {
-//
-//            position = result.position;
-//            console.log(' position.latitude : ' + position.latitude + ';   position.longitude : ' + position.longitude);
-//
-//            drawMap(museumPosLatLng);
-//
-//        } else {
-//            showErrorMessage(eMsg.cannotGetPosition);
-//        }
-//    }
+    getCurrentPosition(afterGettingPosition);
 
-    drawMap(museumPosLatLng);
+    function afterGettingPosition(result) {
+        if (result.status === 'success') {
+
+            position = result.position;
+            console.log(' position.latitude : ' + position.latitude + ';   position.longitude : ' + position.longitude);
+
+            drawMap(museumPosLatLng);
+
+        } else {
+            showErrorMessage(eMsg.cannotGetPosition);
+        }
+    }
+
 
 
 
@@ -317,14 +318,23 @@ function initIndoorMap() {
 var beaconsOnMap = [];
 var userPosOnMap = null;
 
-function updateIndoorMap(scannedBeaconsArr, userPosition) {
+function updateIndoorMap(beaconsWithRadiusesArr, userPosition) {
     if (indoorMap != null) {
+        
+        // set to del for all beacons on map
+        for(var i in beaconsOnMap){
+            var currBeaconOnMap = beaconsOnMap[i];
+            currBeaconOnMap.isAlive = false;
+        }
+        
         // add beakons with radiuses
-        for (var i in scannedBeaconsArr) {
-            var currBeacon = scannedBeaconsArr[i];
-
+        for (var i in beaconsWithRadiusesArr) {
+            var currBeacon = beaconsWithRadiusesArr[i];
+            
             var existedBeacon = findBeaconInMap(beaconsOnMap, currBeacon);
+            
             if (existedBeacon != null) {
+                existedBeacon.isAlive = true;
                 existedBeacon.radius = currBeacon.radius;
                 existedBeacon.circle.setRadius(existedBeacon.radius);
             } else {
@@ -356,10 +366,21 @@ function updateIndoorMap(scannedBeaconsArr, userPosition) {
                 var circle = new google.maps.Circle(circleOpts);
                 currBeacon.marker = marker;
                 currBeacon.circle = circle;
+                currBeacon.isAlive = true;
 
                 beaconsOnMap.push(currBeacon);
             }
         }
+        
+        // delete from map not alived beacons
+        for(var i in beaconsOnMap){
+            var currBeaconOnMap = beaconsOnMap[i];
+            if(!currBeaconOnMap.isAlive){
+                currBeaconOnMap.marker.setMap(null);
+                currBeaconOnMap.circle.setMap(null);
+            };
+        }
+        
         if (userPosition) {
             
             var userPosLatLng = new google.maps.LatLng(userPosition.lat, userPosition.lng);

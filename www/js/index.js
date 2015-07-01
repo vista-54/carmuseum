@@ -218,18 +218,27 @@ function googleMapLoadScript() {
 }
 
 function getCurrentPosition(callback) {
+    if(getCurrentPosition.lastCallMillis){
+        var currMillis = new Date().getMilliseconds();
+        if(currMillis-getCurrentPosition.lastCallMillis < 100){  // 100 milliseconds default timeout
+            getCurrentPosition.lastCallMillis = currMillis;
+            if(getCurrentPosition.lastSavedCoords) {
+                console.log("returned last saved coords");
+                callback({status: 'success', position: getCurrentPosition.lastSavedCoords});
+                return;
+            }
+        }
+    }
     //if(! isDeviceReady() ){ return false;}
-    //alert('buildJobsNearbyTabshowJobsNearbyTab() called  \n'+ isDeviceReady() );
-    console.log("getCurrentPosition");
-//    googleMapLoadScript();
     navigator.geolocation.getCurrentPosition(
             function (position) {
+                getCurrentPosition.lastSavedCoords = position.coords;
                 callback({status: 'success', position: position.coords});
-                console.log("Success");
+                console.log("return geo coords Success");
             },
             function (error) {
                 callback({status: 'error', error: error});
-                console.log("Fail");
+                console.log("Fail getting coords");
             }
     );
 }
@@ -338,38 +347,38 @@ function renderDirections(result, polylineOpts) {
 
 
 //=============================Indoor init======================================
-
-
-IndoorNav = {
-    init: function (apikey, building) {
-        IndoorNav.indoors = new indoors(apikey, building);
-        IndoorNav.indoors.onmessage = function (e) {
-            console.log('MESSAGE: ' + e.data.indoorsEvent + ' | DATA: ' + e.data.indoorsData); //TODO
-        };
-        IndoorNav.indoors.onsuccess = function (e) {
-            console.log('SUCCESS: ' + e.data.indoorsEvent + ' | DATA: ' + e.data.indoorsData); //TODO
-        };
-        IndoorNav.indoors.onerror = function (e) {
-            console.log('ERROR: ' + e.data.indoorsEvent + ' | DATA: ' + e.data.indoorsData); //TODO
-        };
-    },
-    destruct: function () {
-        if (typeof IndoorNav.indoors != 'undefined') {
-            IndoorNav.indoors.destruct();
-        }
-    }
-};
-
-
-function indoorInit() {
-    //IndoorNav.init('APIKEY', 'BUILDINGID');
-    IndoorNav.init('APIKEY', '123456');
-
-}
-
-//IndoorNav.init('APIKEY', 'BUILDINGID');
-$(window).unload(function () {
-    IndoorNav.destruct();
-});
+//
+//
+//IndoorNav = {
+//    init: function (apikey, building) {
+//        IndoorNav.indoors = new indoors(apikey, building);
+//        IndoorNav.indoors.onmessage = function (e) {
+//            console.log('MESSAGE: ' + e.data.indoorsEvent + ' | DATA: ' + e.data.indoorsData); //TODO
+//        };
+//        IndoorNav.indoors.onsuccess = function (e) {
+//            console.log('SUCCESS: ' + e.data.indoorsEvent + ' | DATA: ' + e.data.indoorsData); //TODO
+//        };
+//        IndoorNav.indoors.onerror = function (e) {
+//            console.log('ERROR: ' + e.data.indoorsEvent + ' | DATA: ' + e.data.indoorsData); //TODO
+//        };
+//    },
+//    destruct: function () {
+//        if (typeof IndoorNav.indoors != 'undefined') {
+//            IndoorNav.indoors.destruct();
+//        }
+//    }
+//};
+//
+//
+//function indoorInit() {
+//    //IndoorNav.init('APIKEY', 'BUILDINGID');
+//    IndoorNav.init('APIKEY', '123456');
+//
+//}
+//
+////IndoorNav.init('APIKEY', 'BUILDINGID');
+//$(window).unload(function () {
+//    IndoorNav.destruct();
+//});
 
 //==========================================Init END============================
