@@ -143,10 +143,10 @@ function startScan()
         var beaconsWithRadiuses = buildBeaconsWithRadiusesArray(scannedBeaconsArr, existedBeaconsArr);
         var realPosition = corelateResult(beaconsWithRadiuses);
         updateIndoorMap(beaconsWithRadiuses, realPosition);
-        console.log('------- updateIndoorPeriod----- '+ new Date().getMilliseconds());
+        console.log('------- updateIndoorPeriod----- '+ new Date().getTime());
         
         if (realPosition) {
-            $('#cordinate').html("lat: " + realPosition.lat + "; lng: " + realPosition.lng);
+            $('#cordinate').html("lat: " + (realPosition.lat).toFixed(10) + "; lng: " + (realPosition.lng).toFixed(10));
         }
     };
 
@@ -191,9 +191,9 @@ function startScan()
 
         // Start monitoring.
         // (Not used in this example, included as a reference.)
-        locationManager.startMonitoringForRegion(beaconRegion)
-                .fail(console.error)
-                .done();
+//        locationManager.startMonitoringForRegion(beaconRegion)
+//                .fail(console.error)
+//                .done();
 //        count=count+1;
 
     }
@@ -290,7 +290,7 @@ function initIndoorMap() {
         if (result.status === 'success') {
 
             position = result.position;
-            console.log(' position.latitude : ' + position.latitude + ';   position.longitude : ' + position.longitude);
+            console.log(' position.latitude : ' +  (position.latitude).toFixed(10) + ';   position.longitude : ' + (position.longitude).toFixed(10));
 
             drawMap(museumPosLatLng);
 
@@ -336,6 +336,10 @@ function updateIndoorMap(beaconsWithRadiusesArr, userPosition) {
             if (existedBeacon != null) {
                 existedBeacon.isAlive = true;
                 existedBeacon.radius = currBeacon.radius;
+                if(existedBeacon.marker.getMap() == null){
+                    existedBeacon.marker.setMap(indoorMap);
+                    existedBeacon.circle.setMap(indoorMap);
+                }
                 existedBeacon.circle.setRadius(existedBeacon.radius);
             } else {
                 var beaconPos = new google.maps.LatLng(currBeacon.lat, currBeacon.lng);

@@ -57,20 +57,22 @@ function isTouchDevice() {
 
 function showMessage(msg, type) {
     //type: 'alert', 'warning', 'success', 'information', 'error'
-    if (!type) {
-        type = 'alert';
-    }
-    var n = noty({
-        text: msg,
-        timeout: 5000,
-        type: type,
-        layout: 'topCenter',
-        killer: true,
-        maxVisible: 3,
-        force: true,
-        dismissQueue: false,
-        template: '<div class="noty_message"><span class="noty_text"></span><div class="noty_close"></div></div>'
-    });
+//    if (!type) {
+//        type = 'alert';
+//    }
+//    var n = noty({
+//        text: msg,
+//        timeout: 5000,
+//        type: type,
+//        layout: 'topCenter',
+//        killer: true,
+//        maxVisible: 3,
+//        force: true,
+//        dismissQueue: false,
+//        template: '<div class="noty_message"><span class="noty_text"></span><div class="noty_close"></div></div>'
+//    });
+
+    alert(msg);
 }
 
 

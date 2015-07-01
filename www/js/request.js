@@ -1,15 +1,11 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 
 id.originalHost = 'http://159.224.220.250/carmuseumAPI/backend/';
 
 var url = {
-    GetData: 'web/index.php?r=api%2Fget-by-url-exhibits'
+    GetData: 'web/index.php?r=api%2Fget-by-url-exhibits',
+    Beacon: 'web/index.php?r=api%2Fget-existed-beacons-arr'
 };
+
 function getData(formData, callback){
     var urlToUpload = id.host + url.GetData;
     var params = {
@@ -20,6 +16,20 @@ function getData(formData, callback){
     };
     ajaxRequest(params, callback);
 }
+
+
+ function getExistedBeacons(formData, callback){
+    var urlToUpload = id.host + url.Beacon;
+    var params = {
+        url: urlToUpload,
+        type: 'POST',
+        formData: formData,
+        needBlock: false
+    };
+    ajaxRequest(params, callback);
+}
+
+
 
 function ajaxRequest(params, callback) {
   
@@ -114,9 +124,3 @@ function ajaxRequest(params, callback) {
     });
 }
 
-//function getAvailableJobs(callback){
-//    var params = {
-//        url: url.availableJobs
-//    };
-//    ajaxRequest(params, callback);
-//}

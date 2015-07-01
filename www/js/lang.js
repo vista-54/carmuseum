@@ -16,7 +16,8 @@ var eMsg = {
     loginBlankError: 'Login cannot be blank',
     pwdBlankError: 'Password cannot be blank',
     enterSignature: 'Input signature first',
-    incorrectUrl: 'Incorrect URL'
+    incorrectUrl: 'Incorrect URL',
+    cannotGetPosition: 'Cannot get Position'
 };
 
 var aMsg = {

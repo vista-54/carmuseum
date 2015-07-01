@@ -7,7 +7,7 @@ im = {
     p: null,
     uuid: null,
     power: 0,
-    scannedBeakonsArr:[]
+    scannedBeakonsArr: []
 };
 
 var id = {
@@ -44,15 +44,12 @@ function checkFullReady() {
         console.log('full ready');
         fullReady();
     }
-
 }
 
 
-function fullReady(){
+function fullReady() {
     readHost();
-    
     googleMapLoadScript();
-    
 }
 
 
@@ -68,7 +65,7 @@ function readHost() {
 function loadContent(page) {
     if (page === 'location') {
         $('#content').load('1.html #location', function () {
-            
+
 //                setTimeout(function () {
 
 //        createMap();
@@ -218,29 +215,60 @@ function googleMapLoadScript() {
 }
 
 function getCurrentPosition(callback) {
-    if(getCurrentPosition.lastCallMillis){
-        var currMillis = new Date().getMilliseconds();
-        if(currMillis-getCurrentPosition.lastCallMillis < 100){  // 100 milliseconds default timeout
-            getCurrentPosition.lastCallMillis = currMillis;
-            if(getCurrentPosition.lastSavedCoords) {
-                console.log("returned last saved coords");
-                callback({status: 'success', position: getCurrentPosition.lastSavedCoords});
-                return;
-            }
-        }
+    if (!getCurrentPosition.previousCallTime) {
+        getCurrentPosition.previousCallTime = 0;
     }
+
+    if (!getCurrentPosition.callbacks) {
+        getCurrentPosition.callbacks = [];
+    }
+
+
+
+    var previousCallTime = getCurrentPosition.previousCallTime;
+    var currTime = new Date().getTime();
+    var addToCallbacks = false;
+    if (currTime - previousCallTime < 100) {  // 100 milliseconds default timeout
+        addToCallbacks = true;
+
+    }
+    getCurrentPosition.previousCallTime = currTime;
+
+    if (addToCallbacks) {
+        getCurrentPosition.callbacks.push(callback);
+        return;
+    }
+    getCurrentPosition.callbacks.push(callback);
+
+
     //if(! isDeviceReady() ){ return false;}
     navigator.geolocation.getCurrentPosition(
             function (position) {
                 getCurrentPosition.lastSavedCoords = position.coords;
-                callback({status: 'success', position: position.coords});
+                var retObj = {status: 'success', position: position.coords};
+                while (getCurrentPosition.callbacks.length > 0) {
+                    var currCallback = getCurrentPosition.callbacks.shift();
+                    currCallback.call(null, retObj);
+                }
+                getCurrentPosition.callbacks = [];
                 console.log("return geo coords Success");
             },
             function (error) {
-                callback({status: 'error', error: error});
+                //callback({status: 'error', error: error});
+                var retObj = {status: 'error', error: error};
+                for (var i in getCurrentPosition.callbacks) {
+                    var currCallback = getCurrentPosition.callbacks[i];
+                    currCallback.call(null, retObj);
+                }
+                getCurrentPosition.callbacks = [];
                 console.log("Fail getting coords");
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 30000
             }
-    );
+            );
 }
 
 function createMap() {
@@ -382,3 +410,20 @@ function renderDirections(result, polylineOpts) {
 //});
 
 //==========================================Init END============================
+
+
+function getExistedBeaconsArr(){
+    var data={};
+   
+    getExistedBeacons(data, response);
+        function response(result)
+        {
+            console.log(result);
+            for(var i in result.data)
+            {
+                var obj=result.data[i];
+                existedBeaconsArr.push(obj);
+            }
+            //$("#list").html(frameHtml);
+        }
+}
