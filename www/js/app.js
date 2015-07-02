@@ -292,10 +292,13 @@ function initIndoorMap() {
             position = result.position;
             console.log(' position.latitude : ' +  (position.latitude).toFixed(10) + ';   position.longitude : ' + (position.longitude).toFixed(10));
 
-            drawMap(museumPosLatLng);
+            waitForLoadingMapsApi(function(){
+                drawMap(museumPosLatLng);
+            });
+            
 
         } else {
-            showErrorMessage(eMsg.cannotGetPosition);
+            showErrorMessage(eMsg.cannotGetPosition +' : '+ result.error.message);
         }
     }
 
@@ -308,8 +311,12 @@ function initIndoorMap() {
             zoom: 512,
             center: posLatlng
         };
-        var _indoorMap = new google.maps.Map(document.getElementById('indoor-map'), mapOptions);
-        indoorMap = _indoorMap;
+        
+        waitForLoadingMapsApi(function(){
+            var _indoorMap = new google.maps.Map(document.getElementById('indoor-map'), mapOptions);
+            indoorMap = _indoorMap;
+        });
+        
     }
 
 

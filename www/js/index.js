@@ -3,7 +3,6 @@
 var directionsService, map;
 im = {
 //    uuid: null,
-    readyCounter: 0,
     p: null,
     uuid: null,
     power: 0,
@@ -30,17 +29,19 @@ document.addEventListener("deviceready", checkFullReady, false);
 
 $(document).ready(function () {
     console.log('document ready');
-
     checkFullReady();
-
 });
 
 function checkFullReady() {
-    im.readyCounter++;
-    if (!isMobile) {
-        im.readyCounter++;
+    var its = checkFullReady;
+    if(!its.readyCounter){
+        its.readyCounter = 0;
     }
-    if (im.readyCounter === 2) {
+    its.readyCounter++;
+    if (!isMobile) {
+        its.readyCounter++;
+    }
+    if (its.readyCounter === 2) {
         console.log('full ready');
         fullReady();
     }
@@ -50,6 +51,7 @@ function checkFullReady() {
 function fullReady() {
     readHost();
     googleMapLoadScript();
+    getExistedBeaconsArr();
 }
 
 
@@ -204,9 +206,43 @@ function FindBeaconInDataBase($uuid) {
 
 //==================Location==========================
 function initializeGoogleMap() {
+    waitForLoadingMapsApi.apiIsLoaded = true;
+    waitForLoadingMapsApi(null, true);
     console.log('google maps initialized success');
     createMap();
 }
+
+function waitForLoadingMapsApi(callback, inited){
+    var its = waitForLoadingMapsApi;
+    if(!its.callbacks){
+        its.callbacks = [];
+    }
+    if(!its.apiIsLoaded){
+        its.apiIsLoaded = false;
+    }
+    
+    if(inited){
+        its.apiIsLoaded = true;
+    }
+    
+    if(its.apiIsLoaded){
+        if(callback){
+            callback.call(null);
+        }
+    }else{
+        if(callback){
+            its.callbacks.push(callback);
+        }
+    }
+    
+    if(its.apiIsLoaded){
+        while (its.callbacks.length > 0 ){
+            var currCallback = its.callbacks.shift();
+            currCallback.call(null);
+        }
+    }
+}
+
 function googleMapLoadScript() {
     setTimeout(function () {
         $.getScript('http://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true&' +
@@ -214,58 +250,60 @@ function googleMapLoadScript() {
     }, 500);
 }
 
+
+
 function getCurrentPosition(callback) {
-    if (!getCurrentPosition.previousCallTime) {
-        getCurrentPosition.previousCallTime = 0;
+    var its = getCurrentPosition;
+    if (!its.previousCallTime) {
+        its.previousCallTime = 0;
     }
 
-    if (!getCurrentPosition.callbacks) {
-        getCurrentPosition.callbacks = [];
+    if (!its.callbacks) {
+        its.callbacks = [];
     }
 
 
 
-    var previousCallTime = getCurrentPosition.previousCallTime;
+    var previousCallTime = its.previousCallTime;
     var currTime = new Date().getTime();
     var addToCallbacks = false;
     if (currTime - previousCallTime < 100) {  // 100 milliseconds default timeout
         addToCallbacks = true;
 
     }
-    getCurrentPosition.previousCallTime = currTime;
+    its.previousCallTime = currTime;
 
     if (addToCallbacks) {
-        getCurrentPosition.callbacks.push(callback);
+        its.callbacks.push(callback);
         return;
     }
-    getCurrentPosition.callbacks.push(callback);
+    its.callbacks.push(callback);
 
 
     //if(! isDeviceReady() ){ return false;}
     navigator.geolocation.getCurrentPosition(
             function (position) {
-                getCurrentPosition.lastSavedCoords = position.coords;
+                its.lastSavedCoords = position.coords;
                 var retObj = {status: 'success', position: position.coords};
-                while (getCurrentPosition.callbacks.length > 0) {
-                    var currCallback = getCurrentPosition.callbacks.shift();
+                while (its.callbacks.length > 0) {
+                    var currCallback = its.callbacks.shift();
                     currCallback.call(null, retObj);
                 }
-                getCurrentPosition.callbacks = [];
+                its.callbacks = [];
                 console.log("return geo coords Success");
             },
             function (error) {
                 //callback({status: 'error', error: error});
                 var retObj = {status: 'error', error: error};
-                for (var i in getCurrentPosition.callbacks) {
-                    var currCallback = getCurrentPosition.callbacks[i];
+                while (its.callbacks.length > 0) {
+                    var currCallback = its.callbacks.shift();
                     currCallback.call(null, retObj);
                 }
-                getCurrentPosition.callbacks = [];
                 console.log("Fail getting coords");
             },
             {
                 enableHighAccuracy: true,
-                timeout: 5000,
+                timeout: 10000,
                 maximumAge: 30000
             }
             );
@@ -425,5 +463,7 @@ function getExistedBeaconsArr(){
                 existedBeaconsArr.push(obj);
             }
             //$("#list").html(frameHtml);
+            
+            regions = buildRegionsFromExistedBeacons(existedBeaconsArr);
         }
 }

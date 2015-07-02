@@ -4,9 +4,9 @@ var existedBeaconsArr = [
 //    {name: 'A4xg', lat: 7, lng: 0, uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E', major: '46650', minor: '37051'},
 //    {name: 'c5nr', lat: 0, lng: 4.2, uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E', major: '46609', minor: '33951'},
 
-    {name: 'mTDB', lat: 49.585966493118995,  lng: 34.546907767653465,  uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E', major: '14575', minor: '21386', height: 1 , level:1 },
-    {name: 'A4xg', lat: 49.58594519167159,   lng: 34.54695001244545,   uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E', major: '46650', minor: '37051', height: 1 , level:1 },
-    {name: 'c5nr', lat: 49.585991272342035,  lng: 34.54693593084812,   uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E', major: '46609', minor: '33951', height: 1 , level:1 },
+//    {name: 'mTDB', lat: 49.585966493118995,  lng: 34.546907767653465,  uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E', major: '14575', minor: '21386', height: 1 , level:1 },
+//    {name: 'A4xg', lat: 49.58594519167159,   lng: 34.54695001244545,   uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E', major: '46650', minor: '37051', height: 1 , level:1 },
+//    {name: 'c5nr', lat: 49.585991272342035,  lng: 34.54693593084812,   uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E', major: '46609', minor: '33951', height: 1 , level:1 },
 ];
 
 
@@ -17,6 +17,26 @@ var existedBeaconsArr = [
 //    {uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E', major: '46609', minor: '33951', rssi: -62, accuracy: 7}
 //];
 
+
+function buildRegionsFromExistedBeacons(existedBeacons){
+    var regionsArr = [];
+    for(var i in existedBeacons){
+        var currExtBcn = existedBeacons[i];
+        var exists = false;
+        for(var j in regionsArr){
+            var currReg = regionsArr[j];
+            if(currReg.uuid.toLowerCase() === currExtBcn.uuid.toLowerCase()){
+                exists = true;
+                continue;
+            }
+        }
+        if(!exists){
+            regionsArr.push({uuid: currExtBcn.uuid});
+        }
+        
+    }
+    return regionsArr;
+}
 
 
 
