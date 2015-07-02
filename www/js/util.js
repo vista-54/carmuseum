@@ -6,6 +6,9 @@ function checkConnection() {
         var networkState = navigator.connection.type;
 
         var states = {};
+        if(!Connection){
+            Connection = navigator.connection;
+        }
         states[Connection.UNKNOWN] = 'Unknown connection';
         states[Connection.ETHERNET] = 'Ethernet connection';
         states[Connection.WIFI] = 'WiFi connection';

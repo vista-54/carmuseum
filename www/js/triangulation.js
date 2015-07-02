@@ -18,26 +18,25 @@ var existedBeaconsArr = [
 //];
 
 
-function buildRegionsFromExistedBeacons(existedBeacons){
+function buildRegionsFromExistedBeacons(existedBeacons) {
     var regionsArr = [];
-    for(var i in existedBeacons){
+    for (var i in existedBeacons) {
         var currExtBcn = existedBeacons[i];
         var exists = false;
-        for(var j in regionsArr){
+        for (var j in regionsArr) {
             var currReg = regionsArr[j];
-            if(currReg.uuid.toLowerCase() === currExtBcn.uuid.toLowerCase()){
+            if (currReg.uuid.toLowerCase() === currExtBcn.uuid.toLowerCase()) {
                 exists = true;
                 continue;
             }
         }
-        if(!exists){
+        if (!exists) {
             regionsArr.push({uuid: currExtBcn.uuid});
         }
-        
+
     }
     return regionsArr;
 }
-
 
 
 function buildBeaconsWithRadiusesArray(scannedBeaconsArr, existedBeaconsArr) {
@@ -62,20 +61,20 @@ function buildBeaconsWithRadiusesArray(scannedBeaconsArr, existedBeaconsArr) {
 }
 
 
-function calculateDistanceBetweenTwoDots(P1, P2, measure ) {
-    
-    if(measure == 'deg'){
+function calculateDistanceBetweenTwoDots(P1, P2, measure) {
+
+    if (measure == 'deg') {
         var R = 6378.137; // Radius of earth in KM
         var dLat = (P2.lat - P1.lat) * Math.PI / 180;
         var dLng = (P2.lng - P1.lng) * Math.PI / 180;
-        var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-        Math.cos(P1.lat * Math.PI / 180) * Math.cos(P2.lat * Math.PI / 180) *
-        Math.sin(dLng/2) * Math.sin(dLng/2);
-        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(P1.lat * Math.PI / 180) * Math.cos(P2.lat * Math.PI / 180) *
+            Math.sin(dLng / 2) * Math.sin(dLng / 2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         var d = R * c;
         return d * 1000; // meters
     }
-    if(measure == 'met'){
+    if (measure == 'met') {
         var k1 = Math.abs(P2.lat - P1.lat);
         var k2 = Math.abs(P2.lng - P1.lng);
         var dist = Math.sqrt(k1 * k1 + k2 * k2);
@@ -85,7 +84,7 @@ function calculateDistanceBetweenTwoDots(P1, P2, measure ) {
 }
 
 
-function findIntersectDotsByTwoCircles(P1, P2 , measure) {  //Px{ lat, lng, radius }
+function findIntersectDotsByTwoCircles(P1, P2, measure) {  //Px{ lat, lng, radius }
     var l = calculateDistanceBetweenTwoDots(P1, P2, measure);
     var R1 = P1.radius;
     var R2 = P2.radius;
@@ -111,16 +110,16 @@ function detectRealPosition(beaconsWithRadiuses, measure) {
     var interDots = [];
     var lines = [];
 
-    if(beaconsWithRadiuses.length==0){
+    if (beaconsWithRadiuses.length == 0) {
         return null;
     }
 
     //only one beacon
-    if (beaconsWithRadiuses.length == 0) {
+    if (beaconsWithRadiuses.length == 1) {
         var beacon = beaconsWithRadiuses[0];
         var dot = {
-            lng: beacon.lat,
-            lat: beacon.lng,
+            lat: beacon.lat,
+            lng: beacon.lng,
             probability: 0.1,
             avgRadius: beacon.radius,
             maxDistance: beacon.radius,
@@ -133,7 +132,7 @@ function detectRealPosition(beaconsWithRadiuses, measure) {
     for (var i = 0; i < beaconsWithRadiuses.length; i++) {
         for (var j = i; j < beaconsWithRadiuses.length; j++) {
             if (i != j) {
-                var dotsPair = findIntersectDotsByTwoCircles(beaconsWithRadiuses[i], beaconsWithRadiuses[j] , measure);
+                var dotsPair = findIntersectDotsByTwoCircles(beaconsWithRadiuses[i], beaconsWithRadiuses[j], measure);
                 if (!isNaN(dotsPair.D1.lat) && !isNaN(dotsPair.D1.lng) && !isNaN(dotsPair.D2.lat) && !isNaN(dotsPair.D2.lng)) {
                     //interDots.push(dotsPair.D1);
                     //interDots.push(dotsPair.D2);

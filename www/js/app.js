@@ -5,7 +5,7 @@
 var regions =
         [
             // Sample UUIDs for beacons in our lab.
-            {uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E'},
+           // {uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E'},
         ];
 
 // Dictionary of beacons.
@@ -143,8 +143,8 @@ function startScan()
         var beaconsWithRadiuses = buildBeaconsWithRadiusesArray(scannedBeaconsArr, existedBeaconsArr);
         var realPosition = corelateResult(beaconsWithRadiuses);
         updateIndoorMap(beaconsWithRadiuses, realPosition);
-        console.log('------- updateIndoorPeriod----- '+ new Date().getTime());
-        
+        // time of updating is about 1100 millis
+
         if (realPosition) {
             $('#cordinate').html("lat: " + (realPosition.lat).toFixed(10) + "; lng: " + (realPosition.lng).toFixed(10));
         }
@@ -273,7 +273,7 @@ function displayBeaconList()
     });
 
 
-    
+
 }
 
 
@@ -287,19 +287,18 @@ function initIndoorMap() {
     getCurrentPosition(afterGettingPosition);
 
     function afterGettingPosition(result) {
-        if (result.status === 'success') {
-
+        if (result.error) {
+            showErrorMessage(eMsg.cannotGetPosition + ' : ' + result.error);
+            position = museumPosLatLng;
+        }else{
             position = result.position;
-            console.log(' position.latitude : ' +  (position.latitude).toFixed(10) + ';   position.longitude : ' + (position.longitude).toFixed(10));
-
-            waitForLoadingMapsApi(function(){
-                drawMap(museumPosLatLng);
-            });
-            
-
-        } else {
-            showErrorMessage(eMsg.cannotGetPosition +' : '+ result.error.message);
+            console.log(' position.latitude : ' + (position.latitude).toFixed(10) + ';   position.longitude : ' + (position.longitude).toFixed(10));
         }
+
+        waitForLoadingMapsApi(function () {
+            drawMap(position);
+        });
+
     }
 
 
@@ -311,12 +310,12 @@ function initIndoorMap() {
             zoom: 512,
             center: posLatlng
         };
-        
-        waitForLoadingMapsApi(function(){
+
+        waitForLoadingMapsApi(function () {
             var _indoorMap = new google.maps.Map(document.getElementById('indoor-map'), mapOptions);
             indoorMap = _indoorMap;
         });
-        
+
     }
 
 
@@ -327,37 +326,37 @@ var userPosOnMap = null;
 
 function updateIndoorMap(beaconsWithRadiusesArr, userPosition) {
     if (indoorMap != null) {
-        
+
         // set to del for all beacons on map
-        for(var i in beaconsOnMap){
+        for (var i in beaconsOnMap) {
             var currBeaconOnMap = beaconsOnMap[i];
             currBeaconOnMap.isAlive = false;
         }
-        
+
         // add beakons with radiuses
         for (var i in beaconsWithRadiusesArr) {
             var currBeacon = beaconsWithRadiusesArr[i];
-            
+
             var existedBeacon = findBeaconInMap(beaconsOnMap, currBeacon);
-            
+
             if (existedBeacon != null) {
                 existedBeacon.isAlive = true;
                 existedBeacon.radius = currBeacon.radius;
-                if(existedBeacon.marker.getMap() == null){
+                if (existedBeacon.marker.getMap() == null) {
                     existedBeacon.marker.setMap(indoorMap);
                     existedBeacon.circle.setMap(indoorMap);
                 }
                 existedBeacon.circle.setRadius(existedBeacon.radius);
             } else {
                 var beaconPos = new google.maps.LatLng(currBeacon.lat, currBeacon.lng);
-                
+
                 var markerImage = new google.maps.MarkerImage(
                         'images/beacon.png',
                         new google.maps.Size(36, 36),
                         new google.maps.Point(0, 0),
                         new google.maps.Point(18, 18)
-                    );
-                
+                        );
+
                 var marker = new google.maps.Marker({
                     position: beaconPos,
                     map: indoorMap,
@@ -382,35 +381,36 @@ function updateIndoorMap(beaconsWithRadiusesArr, userPosition) {
                 beaconsOnMap.push(currBeacon);
             }
         }
-        
+
         // delete from map not alived beacons
-        for(var i in beaconsOnMap){
+        for (var i in beaconsOnMap) {
             var currBeaconOnMap = beaconsOnMap[i];
-            if(!currBeaconOnMap.isAlive){
+            if (!currBeaconOnMap.isAlive) {
                 currBeaconOnMap.marker.setMap(null);
                 currBeaconOnMap.circle.setMap(null);
-            };
+            }
+            ;
         }
-        
+
         if (userPosition) {
-            
+
             var userPosLatLng = new google.maps.LatLng(userPosition.lat, userPosition.lng);
-            
+
             if (userPosOnMap !== null) {
                 userPosOnMap.avgRadius = userPosition.avgRadius;
                 userPosOnMap.circle.setRadius(userPosition.avgRadius);
                 userPosOnMap.circle.setCenter(userPosLatLng);
                 userPosOnMap.marker.setPosition(userPosLatLng);
-                
-                
+
+
             } else {
                 var markerImage = new google.maps.MarkerImage(
                         'images/user_position.png',
                         new google.maps.Size(40, 40),
                         new google.maps.Point(0, 0),
                         new google.maps.Point(20, 20)
-                    );
-                
+                        );
+
                 var marker = new google.maps.Marker({
                     position: userPosLatLng,
                     map: indoorMap,

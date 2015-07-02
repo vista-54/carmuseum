@@ -34,7 +34,7 @@ $(document).ready(function () {
 
 function checkFullReady() {
     var its = checkFullReady;
-    if(!its.readyCounter){
+    if (!its.readyCounter) {
         its.readyCounter = 0;
     }
     its.readyCounter++;
@@ -212,31 +212,31 @@ function initializeGoogleMap() {
     createMap();
 }
 
-function waitForLoadingMapsApi(callback, inited){
+function waitForLoadingMapsApi(callback, inited) {
     var its = waitForLoadingMapsApi;
-    if(!its.callbacks){
+    if (!its.callbacks) {
         its.callbacks = [];
     }
-    if(!its.apiIsLoaded){
+    if (!its.apiIsLoaded) {
         its.apiIsLoaded = false;
     }
-    
-    if(inited){
+
+    if (inited) {
         its.apiIsLoaded = true;
     }
-    
-    if(its.apiIsLoaded){
-        if(callback){
+
+    if (its.apiIsLoaded) {
+        if (callback) {
             callback.call(null);
         }
-    }else{
-        if(callback){
+    } else {
+        if (callback) {
             its.callbacks.push(callback);
         }
     }
-    
-    if(its.apiIsLoaded){
-        while (its.callbacks.length > 0 ){
+
+    if (its.apiIsLoaded) {
+        while (its.callbacks.length > 0) {
             var currCallback = its.callbacks.shift();
             currCallback.call(null);
         }
@@ -257,12 +257,9 @@ function getCurrentPosition(callback) {
     if (!its.previousCallTime) {
         its.previousCallTime = 0;
     }
-
     if (!its.callbacks) {
         its.callbacks = [];
     }
-
-
 
     var previousCallTime = its.previousCallTime;
     var currTime = new Date().getTime();
@@ -284,7 +281,7 @@ function getCurrentPosition(callback) {
     navigator.geolocation.getCurrentPosition(
             function (position) {
                 its.lastSavedCoords = position.coords;
-                var retObj = {status: 'success', position: position.coords};
+                var retObj = {status: {success: true}, position: position.coords};
                 while (its.callbacks.length > 0) {
                     var currCallback = its.callbacks.shift();
                     currCallback.call(null, retObj);
@@ -293,8 +290,7 @@ function getCurrentPosition(callback) {
                 console.log("return geo coords Success");
             },
             function (error) {
-                //callback({status: 'error', error: error});
-                var retObj = {status: 'error', error: error};
+                var retObj = {status: {error: true}, error: error.message};
                 while (its.callbacks.length > 0) {
                     var currCallback = its.callbacks.shift();
                     currCallback.call(null, retObj);
@@ -302,31 +298,37 @@ function getCurrentPosition(callback) {
                 console.log("Fail getting coords");
             },
             {
-                enableHighAccuracy: true,
-                timeout: 10000,
+                //enableHighAccuracy: true,
+                timeout: 15000,
                 maximumAge: 30000
             }
-            );
+    );
 }
 
 function createMap() {
     console.log("mapcreate");
     var position = null;
 
-    var afterGettingPosition = function (result) {
-        if (result.status === 'success') {
-
-            position = result.position;
-            console.log(' position.latitude : ' + position.latitude + ';   position.longitude : ' + position.longitude);
-
-            drawMap(position, {latitude: 50, longitude: 35});
-
-        } else {
-            showErrorMessage(eMsg.cannotGetPosition);
-        }
-    };
-
     getCurrentPosition(afterGettingPosition);
+
+    function afterGettingPosition(result) {
+        if (result.error) {
+            showErrorMessage(eMsg.cannotGetPosition + ' : ' + result.error);
+            return;
+        }
+
+        position = result.position;
+        console.log(' position.latitude : ' + position.latitude + ';   position.longitude : ' + position.longitude);
+
+        waitForLoadingMapsApi(function () {
+            drawMap(position, {latitude: 50, longitude: 35});
+        });
+
+
+    }
+    ;
+
+
 }
 
 
@@ -450,20 +452,21 @@ function renderDirections(result, polylineOpts) {
 //==========================================Init END============================
 
 
-function getExistedBeaconsArr(){
-    var data={};
-   
-    getExistedBeacons(data, response);
-        function response(result)
-        {
-            console.log(result);
-            for(var i in result.data)
-            {
-                var obj=result.data[i];
+function getExistedBeaconsArr() {
+    var data = {};
+
+    getExistedBeacons(data, after);
+    function after(result) {
+        if (result.success) {
+            for (var i in result.data) {
+                var obj = result.data[i];
                 existedBeaconsArr.push(obj);
             }
             //$("#list").html(frameHtml);
-            
+
             regions = buildRegionsFromExistedBeacons(existedBeaconsArr);
+        } else {
+            showErrorMessage(result.error);
         }
+    }
 }

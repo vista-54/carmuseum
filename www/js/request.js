@@ -76,20 +76,20 @@ function ajaxRequest(params, callback) {
         timeout: 15000,
         success: function (response) {
             if (!response) {
-                callback({status: {error: true}, error: eMsg.parserError});
+                callback({success: false, error: eMsg.parserError});
             }
             if (response.status === 'success') {
                 if (needBlock) {
                     $.unblockUI();
                 }
 //                callback({status: 'success', data: response.data});
-                callback({status: {success: true}, data: response.data});
+                callback({success: true, data: response.data});
             } else {
                 if (needBlock) {
                     $.unblockUI();
                 }
 //                callback({status: 'error', error: response.error});
-                callback({status: {error: true}, error: response.error});
+                callback({success: false, error: response.error});
             }
             return;
         },
@@ -116,7 +116,7 @@ function ajaxRequest(params, callback) {
 
             var logMsg = 'Request error:' + params.url + ';  jqXHR.status: ' + jqXHR.status + ';  textStatus:' + textStatus + ';  errorMessage:' + errorMessage;
             console.log(logMsg);
-            callback( {status:'connectionError', error: msg } );
+            callback( {success:false, error: 'Connection error : '+msg } );
             showErrorMessage(msg);
 
             return;
