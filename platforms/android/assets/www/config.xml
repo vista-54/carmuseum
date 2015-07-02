@@ -9,19 +9,23 @@
     </author>
     <content src="index.html"/>
     <access origin="*"/>
-    <gap:plugin name="com.evothings.ble" version="0.0.1" source="plugins.cordova.io" />
-    <gap:plugin name="com.unarin.cordova.beacon" version="3.3.0" source="plugins.cordova.io" />
+    <gap:plugin name="com.evothings.ble" source="plugins.cordova.io" version="0.0.1"/>
+    <gap:plugin name="com.unarin.cordova.beacon" source="plugins.cordova.io" version="3.3.0"/>
     <!--<preference name="permissions" value="none"/>-->
     <gap:plugin name="org.apache.cordova.geolocation"/>
     <gap:plugin name="org.apache.cordova.splashscreen"/>
     <gap:plugin name="org.apache.cordova.console"/>
-    <gap:plugin name="org.apache.cordova.network-information" />
-    <gap:plugin name="org.apache.cordova.statusbar" version="0.1.4" />
+    <gap:plugin name="org.apache.cordova.network-information"/>
+    <gap:plugin name="org.apache.cordova.statusbar" version="0.1.4"/>
+    <!--
     <feature name="NetworkStatus">
-        <param name="android-package" value="org.apache.cordova.networkinformation.NetworkManager" />
+        <param name="android-package" value="org.apache.cordova.networkinformation.NetworkManager"/>
     </feature>
+    -->
+    <!--
     <feature name="indoors">
         <param name="android-package" value="com.phonegap.plugins.indoors" />
     </feature>
+    -->
     <!--<gap:plugin name="com.randdusing.bluetoothle" version="2.0.0" />-->
 </widget>

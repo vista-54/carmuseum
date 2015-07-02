@@ -459,7 +459,11 @@ function getExistedBeaconsArr() {
     function after(result) {
         if (result.success) {
             for (var i in result.data) {
-                var obj = result.data[i];
+                var obj =(result.data[i]);
+                var lat=parseFloat(obj.lat);
+                var lng=parseFloat(obj.lng);
+                obj.lat=lat;
+                obj.lng=lng;
                 existedBeaconsArr.push(obj);
             }
             //$("#list").html(frameHtml);

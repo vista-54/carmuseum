@@ -1,16 +1,12 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
+
 var directionsService, map;
 im = {
 //    uuid: null,
-    readyCounter: 0,
     p: null,
     uuid: null,
     power: 0,
-    scannedBeakonsArr:[]
+    scannedBeakonsArr: []
 };
 
 var id = {
@@ -29,27 +25,36 @@ var store = window.localStorage;
 //function addDataToStore() {
 //    store.setItem('UUID', JSON.stringify(id.iBeaconId));
 //}
-document.addEventListener("deviceready", fullReady, false);
+document.addEventListener("deviceready", checkFullReady, false);
 
 $(document).ready(function () {
     console.log('document ready');
-
-    fullReady();
-
+    checkFullReady();
 });
 
-function fullReady() {
-    im.readyCounter++;
+function checkFullReady() {
+    var its = checkFullReady;
+    if (!its.readyCounter) {
+        its.readyCounter = 0;
+    }
+    its.readyCounter++;
     if (!isMobile) {
-        im.readyCounter++;
+        its.readyCounter++;
     }
-    if (im.readyCounter === 2) {
+    if (its.readyCounter === 2) {
         console.log('full ready');
-        readHost();
-
+        fullReady();
     }
-
 }
+
+
+function fullReady() {
+    readHost();
+    googleMapLoadScript();
+    getExistedBeaconsArr();
+}
+
+
 function readHost() {
     var storedHost = store.getItem('host');
     if (storedHost) {
@@ -62,7 +67,7 @@ function readHost() {
 function loadContent(page) {
     if (page === 'location') {
         $('#content').load('1.html #location', function () {
-            googleMapLoadScript();
+
 //                setTimeout(function () {
 
 //        createMap();
@@ -75,9 +80,9 @@ function loadContent(page) {
         $('#content').load('1.html #exhibits', function () {
             //calculateAccuracy();//
             im.uuid = 0;
-            app.initialize();
 //            im.p='ex';
 //            testAPIController();
+            initIndoorLocation();
 
         });
 
@@ -201,9 +206,43 @@ function FindBeaconInDataBase($uuid) {
 
 //==================Location==========================
 function initializeGoogleMap() {
+    waitForLoadingMapsApi.apiIsLoaded = true;
+    waitForLoadingMapsApi(null, true);
     console.log('google maps initialized success');
     createMap();
 }
+
+function waitForLoadingMapsApi(callback, inited) {
+    var its = waitForLoadingMapsApi;
+    if (!its.callbacks) {
+        its.callbacks = [];
+    }
+    if (!its.apiIsLoaded) {
+        its.apiIsLoaded = false;
+    }
+
+    if (inited) {
+        its.apiIsLoaded = true;
+    }
+
+    if (its.apiIsLoaded) {
+        if (callback) {
+            callback.call(null);
+        }
+    } else {
+        if (callback) {
+            its.callbacks.push(callback);
+        }
+    }
+
+    if (its.apiIsLoaded) {
+        while (its.callbacks.length > 0) {
+            var currCallback = its.callbacks.shift();
+            currCallback.call(null);
+        }
+    }
+}
+
 function googleMapLoadScript() {
     setTimeout(function () {
         $.getScript('http://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true&' +
@@ -211,19 +250,57 @@ function googleMapLoadScript() {
     }, 500);
 }
 
+
+
 function getCurrentPosition(callback) {
+    var its = getCurrentPosition;
+    if (!its.previousCallTime) {
+        its.previousCallTime = 0;
+    }
+    if (!its.callbacks) {
+        its.callbacks = [];
+    }
+
+    var previousCallTime = its.previousCallTime;
+    var currTime = new Date().getTime();
+    var addToCallbacks = false;
+    if (currTime - previousCallTime < 100) {  // 100 milliseconds default timeout
+        addToCallbacks = true;
+
+    }
+    its.previousCallTime = currTime;
+
+    if (addToCallbacks) {
+        its.callbacks.push(callback);
+        return;
+    }
+    its.callbacks.push(callback);
+
+
     //if(! isDeviceReady() ){ return false;}
-    //alert('buildJobsNearbyTabshowJobsNearbyTab() called  \n'+ isDeviceReady() );
-    console.log("getCurrentPosition");
-//    googleMapLoadScript();
     navigator.geolocation.getCurrentPosition(
             function (position) {
-                callback({status: 'success', position: position.coords});
-                console.log("Success");
+                its.lastSavedCoords = position.coords;
+                var retObj = {status: {success: true}, position: position.coords};
+                while (its.callbacks.length > 0) {
+                    var currCallback = its.callbacks.shift();
+                    currCallback.call(null, retObj);
+                }
+                its.callbacks = [];
+                console.log("return geo coords Success");
             },
             function (error) {
-                callback({status: 'error', error: error});
-                console.log("Fail");
+                var retObj = {status: {error: true}, error: error.message};
+                while (its.callbacks.length > 0) {
+                    var currCallback = its.callbacks.shift();
+                    currCallback.call(null, retObj);
+                }
+                console.log("Fail getting coords");
+            },
+            {
+                //enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 30000
             }
     );
 }
@@ -232,20 +309,26 @@ function createMap() {
     console.log("mapcreate");
     var position = null;
 
-    var afterGettingPosition = function (result) {
-        if (result.status === 'success') {
-
-            position = result.position;
-            console.log(' position.latitude : ' + position.latitude + ';   position.longitude : ' + position.longitude);
-
-            drawMap(position, {latitude: 50, longitude: 35});
-
-        } else {
-            showErrorMessage(eMsg.cannotGetPosition);
-        }
-    };
-
     getCurrentPosition(afterGettingPosition);
+
+    function afterGettingPosition(result) {
+        if (result.error) {
+            showErrorMessage(eMsg.cannotGetPosition + ' : ' + result.error);
+            return;
+        }
+
+        position = result.position;
+        console.log(' position.latitude : ' + position.latitude + ';   position.longitude : ' + position.longitude);
+
+        waitForLoadingMapsApi(function () {
+            drawMap(position, {latitude: 50, longitude: 35});
+        });
+
+
+    }
+    ;
+
+
 }
 
 
@@ -332,38 +415,58 @@ function renderDirections(result, polylineOpts) {
 
 
 //=============================Indoor init======================================
-
-
-IndoorNav = {
-    init: function (apikey, building) {
-        IndoorNav.indoors = new indoors(apikey, building);
-        IndoorNav.indoors.onmessage = function (e) {
-            console.log('MESSAGE: ' + e.data.indoorsEvent + ' | DATA: ' + e.data.indoorsData); //TODO
-        };
-        IndoorNav.indoors.onsuccess = function (e) {
-            console.log('SUCCESS: ' + e.data.indoorsEvent + ' | DATA: ' + e.data.indoorsData); //TODO
-        };
-        IndoorNav.indoors.onerror = function (e) {
-            console.log('ERROR: ' + e.data.indoorsEvent + ' | DATA: ' + e.data.indoorsData); //TODO
-        };
-    },
-    destruct: function () {
-        if (typeof IndoorNav.indoors != 'undefined') {
-            IndoorNav.indoors.destruct();
-        }
-    }
-};
-
-
-function indoorInit() {
-    //IndoorNav.init('APIKEY', 'BUILDINGID');
-    IndoorNav.init('APIKEY', '123456');
-
-}
-
-//IndoorNav.init('APIKEY', 'BUILDINGID');
-$(window).unload(function () {
-    IndoorNav.destruct();
-});
+//
+//
+//IndoorNav = {
+//    init: function (apikey, building) {
+//        IndoorNav.indoors = new indoors(apikey, building);
+//        IndoorNav.indoors.onmessage = function (e) {
+//            console.log('MESSAGE: ' + e.data.indoorsEvent + ' | DATA: ' + e.data.indoorsData); //TODO
+//        };
+//        IndoorNav.indoors.onsuccess = function (e) {
+//            console.log('SUCCESS: ' + e.data.indoorsEvent + ' | DATA: ' + e.data.indoorsData); //TODO
+//        };
+//        IndoorNav.indoors.onerror = function (e) {
+//            console.log('ERROR: ' + e.data.indoorsEvent + ' | DATA: ' + e.data.indoorsData); //TODO
+//        };
+//    },
+//    destruct: function () {
+//        if (typeof IndoorNav.indoors != 'undefined') {
+//            IndoorNav.indoors.destruct();
+//        }
+//    }
+//};
+//
+//
+//function indoorInit() {
+//    //IndoorNav.init('APIKEY', 'BUILDINGID');
+//    IndoorNav.init('APIKEY', '123456');
+//
+//}
+//
+////IndoorNav.init('APIKEY', 'BUILDINGID');
+//$(window).unload(function () {
+//    IndoorNav.destruct();
+//});
 
 //==========================================Init END============================
+
+
+function getExistedBeaconsArr() {
+    var data = {};
+
+    getExistedBeacons(data, after);
+    function after(result) {
+        if (result.success) {
+            for (var i in result.data) {
+                var obj = result.data[i];
+                existedBeaconsArr.push(obj);
+            }
+            //$("#list").html(frameHtml);
+
+            regions = buildRegionsFromExistedBeacons(existedBeaconsArr);
+        } else {
+            showErrorMessage(result.error);
+        }
+    }
+}
