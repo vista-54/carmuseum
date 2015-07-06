@@ -250,7 +250,7 @@ function displayBeaconList()
 
             // Create tag to display beacon data.
             var element = $(
-                    '<li>'
+                    '<li><a onclick=loadExhibit('+beacon.uuid,beacon.minor,beacon.major+')+>'
                     + 'U:' + beacon.uuid + '<br />'
                     + 'Mj: ' + beacon.major + ' &nbsp; '
                     + 'Mn: ' + beacon.minor + ' &nbsp; '
@@ -262,7 +262,7 @@ function displayBeaconList()
 //                    + 'Max minor:' + minorMax + '<br/>'
 //                    + '<div style="background:rgb(255,128,64);height:20px;width:'
 //                    + rssiWidth + '%;"></div>'
-                    + '</li>'
+                    + '</a></li>'
                     );
             $('#warning').remove();
             $('#found-beacons').append(element);

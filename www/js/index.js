@@ -67,12 +67,7 @@ function readHost() {
 function loadContent(page) {
     if (page === 'location') {
         $('#content').load('1.html #location', function () {
-
-//                setTimeout(function () {
-
-//        createMap();
-//    }, 500);
-
+            googleMapLoadScript();
         });
 
     }
@@ -97,13 +92,12 @@ function loadContent(page) {
         });
 
     }
-    if (page === 'navi') {
-        $('#content').load('index.html #menu', function () {
-//            im.p='menu';
-
-//            app.initialize();
+    if (page === 'navigation') {
+        $('#content').load('1.html #navi', function () {
+            im.uuid = 0;
+//            im.p='ex';
 //            testAPIController();
-
+            initIndoorLocation();
         });
 
     }
@@ -124,7 +118,16 @@ function loadContent(page) {
 //        }
 //
 //}
-
+function loadExhibit(uuid,minor,major){
+    var data={};
+    data.uuid=uuid;
+    data.minor=minor;
+    data.major=major;
+    getData(data,callback);
+    function callback(result){
+        console.log(result);
+    }
+}
 function FindBeaconInDataBase($uuid) {
 
     if (im.uuid != $uuid)
@@ -139,7 +142,7 @@ function FindBeaconInDataBase($uuid) {
         data.uuid = im.uuid;
 //bodyHeight = document.body.offsetHeight;
 //    bodyWidth = document.body.offsetWidth;
-        getData(data, response);
+      //  getData(data, response);
         function response(result)
         {
             console.log(result);
@@ -321,7 +324,7 @@ function createMap() {
         console.log(' position.latitude : ' + position.latitude + ';   position.longitude : ' + position.longitude);
 
         waitForLoadingMapsApi(function () {
-            drawMap(position, {latitude: 50, longitude: 35});
+            drawMap(position, {latitude: 35.589994, longitude: -80.864582});
         });
 
 
@@ -459,11 +462,11 @@ function getExistedBeaconsArr() {
     function after(result) {
         if (result.success) {
             for (var i in result.data) {
-                var obj =(result.data[i]);
-                var lat=parseFloat(obj.lat);
-                var lng=parseFloat(obj.lng);
-                obj.lat=lat;
-                obj.lng=lng;
+                var obj = (result.data[i]);
+                var lat = parseFloat(obj.lat);
+                var lng = parseFloat(obj.lng);
+                obj.lat = lat;
+                obj.lng = lng;
                 existedBeaconsArr.push(obj);
             }
             //$("#list").html(frameHtml);
