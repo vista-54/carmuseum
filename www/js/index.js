@@ -1,5 +1,3 @@
-
-
 var directionsService, map;
 im = {
 //    uuid: null,
@@ -67,7 +65,12 @@ function readHost() {
 function loadContent(page) {
     if (page === 'location') {
         $('#content').load('1.html #location', function () {
-            googleMapLoadScript();
+
+//                setTimeout(function () {
+
+//        createMap();
+//    }, 500);
+
         });
 
     }
@@ -92,12 +95,13 @@ function loadContent(page) {
         });
 
     }
-    if (page === 'navigation') {
-        $('#content').load('1.html #navi', function () {
-            im.uuid = 0;
-//            im.p='ex';
+    if (page === 'navi') {
+        $('#content').load('index.html #menu', function () {
+//            im.p='menu';
+
+//            app.initialize();
 //            testAPIController();
-            initIndoorLocation();
+
         });
 
     }
@@ -118,20 +122,10 @@ function loadContent(page) {
 //        }
 //
 //}
-function loadExhibit(uuid,minor,major){
-    var data={};
-    data.uuid=uuid;
-    data.minor=minor;
-    data.major=major;
-    getData(data,callback);
-    function callback(result){
-        console.log(result);
-    }
-}
+
 function FindBeaconInDataBase($uuid) {
 
-    if (im.uuid != $uuid)
-    {
+    if (im.uuid != $uuid) {
 //        app.Mjm = $majorMax;
 //        app.Mnm = $minorMax;
         im.uuid = $uuid;
@@ -142,17 +136,16 @@ function FindBeaconInDataBase($uuid) {
         data.uuid = im.uuid;
 //bodyHeight = document.body.offsetHeight;
 //    bodyWidth = document.body.offsetWidth;
-      //  getData(data, response);
-        function response(result)
-        {
+        getData(data, response);
+        function response(result) {
             console.log(result);
             var frameHtml = '<iframe id="main-frame" src="' + result.data + '" ' +
-                    'height="' + 450 + '" ' +
-                    'name="main-frame" class="main-frame " ' +
-                    'scrolling="yes" ' +
-                    'wmode="Opaque" ' +
-                    'noresize="noresize" ' +
-                    '  </iframe>';
+                'height="' + 450 + '" ' +
+                'name="main-frame" class="main-frame " ' +
+                'scrolling="yes" ' +
+                'wmode="Opaque" ' +
+                'noresize="noresize" ' +
+                '  </iframe>';
 //            if (result.status.error) {
 ////            showErrorMessage(result.error);
 //                $.unblockUI();
@@ -205,13 +198,241 @@ function FindBeaconInDataBase($uuid) {
 //}
 
 
-
-
 //==================Location==========================
 function initializeGoogleMap() {
     waitForLoadingMapsApi.apiIsLoaded = true;
     waitForLoadingMapsApi(null, true);
     console.log('google maps initialized success');
+
+
+    var markerSize = {x: 22, y: 40};
+
+
+    google.maps.Marker.prototype.setLabel = function (label) {
+        this.label = new MarkerLabel({
+            map: this.map,
+            marker: this,
+            text: label
+        });
+        this.label.bindTo('position', this, 'position');
+    };
+
+    var MarkerLabel = function (options) {
+        this.setValues(options);
+        this.span = document.createElement('span');
+        this.span.className = 'map-marker-label';
+    };
+
+    MarkerLabel.prototype = $.extend(new google.maps.OverlayView(), {
+        onAdd: function () {
+            this.getPanes().overlayImage.appendChild(this.span);
+            var self = this;
+            this.listeners = [
+                google.maps.event.addListener(this, 'position_changed', function () {
+                    self.draw();
+                })];
+        },
+        draw: function () {
+            var text = String(this.get('text'));
+            var position = this.getProjection().fromLatLngToDivPixel(this.get('position'));
+            this.span.innerHTML = text;
+            this.span.style.left = (position.x - (markerSize.x / 2)) - (text.length * 3) + 10 + 'px';
+            this.span.style.top = (position.y - markerSize.y + 40) + 'px';
+        }
+    });
+
+
+    // Animated Marker Movement. Robert Gerlach 2012-2013 https://github.com/combatwombat/marker-animate
+// MIT license
+//
+// params:
+// newPosition        - the new Position as google.maps.LatLng()
+// options            - optional options object (optional)
+// options.duration   - animation duration in ms (default 1000)
+// options.easing     - easing function from jQuery and/or the jQuery easing plugin (default 'linear')
+// options.complete   - callback function. Gets called, after the animation has finished
+    google.maps.Marker.prototype.animateTo = function (newPosition, options) {
+        defaultOptions = {
+            duration: 1000,
+            easing: 'linear',
+            complete: null
+        }
+        options = options || {};
+
+        // complete missing options
+        for (key in defaultOptions) {
+            options[key] = options[key] || defaultOptions[key];
+        }
+
+        // throw exception if easing function doesn't exist
+        if (options.easing != 'linear') {
+            if (typeof jQuery == 'undefined' || !jQuery.easing[options.easing]) {
+                throw '"' + options.easing + '" easing function doesn\'t exist. Include jQuery and/or the jQuery easing plugin and use the right function name.';
+                return;
+            }
+        }
+
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+        window.cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame;
+
+        // save current position. prefixed to avoid name collisions. separate for lat/lng to avoid calling lat()/lng() in every frame
+        this.AT_startPosition_lat = this.getPosition().lat();
+        this.AT_startPosition_lng = this.getPosition().lng();
+        var newPosition_lat = newPosition.lat();
+        var newPosition_lng = newPosition.lng();
+
+        // crossing the 180° meridian and going the long way around the earth?
+        if (Math.abs(newPosition_lng - this.AT_startPosition_lng) > 180) {
+            if (newPosition_lng > this.AT_startPosition_lng) {
+                newPosition_lng -= 360;
+            } else {
+                newPosition_lng += 360;
+            }
+        }
+
+        var animateStep = function (marker, startTime) {
+            var ellapsedTime = (new Date()).getTime() - startTime;
+            var durationRatio = ellapsedTime / options.duration; // 0 - 1
+            var easingDurationRatio = durationRatio;
+
+            // use jQuery easing if it's not linear
+            if (options.easing !== 'linear') {
+                easingDurationRatio = jQuery.easing[options.easing](durationRatio, ellapsedTime, 0, 1, options.duration);
+            }
+
+            if (durationRatio < 1) {
+                var deltaPosition = new google.maps.LatLng(marker.AT_startPosition_lat + (newPosition_lat - marker.AT_startPosition_lat) * easingDurationRatio,
+                    marker.AT_startPosition_lng + (newPosition_lng - marker.AT_startPosition_lng) * easingDurationRatio);
+                marker.setPosition(deltaPosition);
+
+                // use requestAnimationFrame if it exists on this browser. If not, use setTimeout with ~60 fps
+                if (window.requestAnimationFrame) {
+                    marker.AT_animationHandler = window.requestAnimationFrame(function () {
+                        animateStep(marker, startTime)
+                    });
+                } else {
+                    marker.AT_animationHandler = setTimeout(function () {
+                        animateStep(marker, startTime)
+                    }, 17);
+                }
+
+            } else {
+
+                marker.setPosition(newPosition);
+
+                if (typeof options.complete === 'function') {
+                    options.complete();
+                }
+
+            }
+        }
+
+        // stop possibly running animation
+        if (window.cancelAnimationFrame) {
+            window.cancelAnimationFrame(this.AT_animationHandler);
+        } else {
+            clearTimeout(this.AT_animationHandler);
+        }
+
+        animateStep(this, (new Date()).getTime());
+    }
+
+
+
+
+
+    //=============  Map  =========================
+
+    google.maps.Map.prototype.animateTo = function (newPosition, options) {
+        defaultOptions = {
+            duration: 1000,
+            easing: 'linear',
+            complete: null
+        }
+        options = options || {};
+
+        // complete missing options
+        for (key in defaultOptions) {
+            options[key] = options[key] || defaultOptions[key];
+        }
+
+        // throw exception if easing function doesn't exist
+        if (options.easing != 'linear') {
+            if (typeof jQuery == 'undefined' || !jQuery.easing[options.easing]) {
+                throw '"' + options.easing + '" easing function doesn\'t exist. Include jQuery and/or the jQuery easing plugin and use the right function name.';
+                return;
+            }
+        }
+
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+        window.cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame;
+
+        // save current position. prefixed to avoid name collisions. separate for lat/lng to avoid calling lat()/lng() in every frame
+        this.AT_startPosition_lat = this.getCenter().lat();
+        this.AT_startPosition_lng = this.getCenter().lng();
+        var newPosition_lat = newPosition.lat();
+        var newPosition_lng = newPosition.lng();
+
+        // crossing the 180° meridian and going the long way around the earth?
+        if (Math.abs(newPosition_lng - this.AT_startPosition_lng) > 180) {
+            if (newPosition_lng > this.AT_startPosition_lng) {
+                newPosition_lng -= 360;
+            } else {
+                newPosition_lng += 360;
+            }
+        }
+
+        var animateStep = function (map, startTime) {
+            var ellapsedTime = (new Date()).getTime() - startTime;
+            var durationRatio = ellapsedTime / options.duration; // 0 - 1
+            var easingDurationRatio = durationRatio;
+
+            // use jQuery easing if it's not linear
+            if (options.easing !== 'linear') {
+                easingDurationRatio = jQuery.easing[options.easing](durationRatio, ellapsedTime, 0, 1, options.duration);
+            }
+
+            if (durationRatio < 1) {
+                var deltaPosition = new google.maps.LatLng(map.AT_startPosition_lat + (newPosition_lat - map.AT_startPosition_lat) * easingDurationRatio,
+                    map.AT_startPosition_lng + (newPosition_lng - map.AT_startPosition_lng) * easingDurationRatio);
+                map.setCenter(deltaPosition);
+
+                // use requestAnimationFrame if it exists on this browser. If not, use setTimeout with ~60 fps
+                if (window.requestAnimationFrame) {
+                    map.AT_animationHandler = window.requestAnimationFrame(function () {
+                        animateStep(map, startTime)
+                    });
+                } else {
+                    map.AT_animationHandler = setTimeout(function () {
+                        animateStep(map, startTime)
+                    }, 17);
+                }
+
+            } else {
+
+                map.setCenter(newPosition);
+
+                if (typeof options.complete === 'function') {
+                    options.complete();
+                }
+
+            }
+        }
+
+        // stop possibly running animation
+        if (window.cancelAnimationFrame) {
+            window.cancelAnimationFrame(this.AT_animationHandler);
+        } else {
+            clearTimeout(this.AT_animationHandler);
+        }
+
+        animateStep(this, (new Date()).getTime());
+    }
+
+
+    ///===========================================
+
+
     createMap();
 }
 
@@ -249,10 +470,9 @@ function waitForLoadingMapsApi(callback, inited) {
 function googleMapLoadScript() {
     setTimeout(function () {
         $.getScript('http://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true&' +
-                'callback=initializeGoogleMap');
+            'callback=initializeGoogleMap');
     }, 500);
 }
-
 
 
 function getCurrentPosition(callback) {
@@ -282,29 +502,29 @@ function getCurrentPosition(callback) {
 
     //if(! isDeviceReady() ){ return false;}
     navigator.geolocation.getCurrentPosition(
-            function (position) {
-                its.lastSavedCoords = position.coords;
-                var retObj = {status: {success: true}, position: position.coords};
-                while (its.callbacks.length > 0) {
-                    var currCallback = its.callbacks.shift();
-                    currCallback.call(null, retObj);
-                }
-                its.callbacks = [];
-                console.log("return geo coords Success");
-            },
-            function (error) {
-                var retObj = {status: {error: true}, error: error.message};
-                while (its.callbacks.length > 0) {
-                    var currCallback = its.callbacks.shift();
-                    currCallback.call(null, retObj);
-                }
-                console.log("Fail getting coords");
-            },
-            {
-                //enableHighAccuracy: true,
-                timeout: 15000,
-                maximumAge: 30000
+        function (position) {
+            its.lastSavedCoords = position.coords;
+            var retObj = {status: {success: true}, position: position.coords};
+            while (its.callbacks.length > 0) {
+                var currCallback = its.callbacks.shift();
+                currCallback.call(null, retObj);
             }
+            its.callbacks = [];
+            console.log("return geo coords Success");
+        },
+        function (error) {
+            var retObj = {status: {error: true}, error: error.message};
+            while (its.callbacks.length > 0) {
+                var currCallback = its.callbacks.shift();
+                currCallback.call(null, retObj);
+            }
+            console.log("Fail getting coords");
+        },
+        {
+            //enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 30000
+        }
     );
 }
 
@@ -324,7 +544,7 @@ function createMap() {
         console.log(' position.latitude : ' + position.latitude + ';   position.longitude : ' + position.longitude);
 
         waitForLoadingMapsApi(function () {
-            drawMap(position, {latitude: 35.589994, longitude: -80.864582});
+            drawMap(position, {latitude: 50, longitude: 35});
         });
 
 
@@ -363,7 +583,6 @@ function drawMap(fromPosition, toPosition) {
         map: map,
         title: 'Museum pos'
     });
-
 
 
     $('.map').click(function (e) {
@@ -462,7 +681,7 @@ function getExistedBeaconsArr() {
     function after(result) {
         if (result.success) {
             for (var i in result.data) {
-                var obj = (result.data[i]);
+                var obj = result.data[i];
                 var lat = parseFloat(obj.lat);
                 var lng = parseFloat(obj.lng);
                 obj.lat = lat;
