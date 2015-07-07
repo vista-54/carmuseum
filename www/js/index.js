@@ -564,7 +564,7 @@ function createMap() {
         console.log(' position.latitude : ' + position.latitude + ';   position.longitude : ' + position.longitude);
 
         waitForLoadingMapsApi(function () {
-            drawMap(position, {latitude: 50, longitude: 35});
+          drawMap(position, {latitude: 35.589994, longitude: -80.864582});
         });
 
 
