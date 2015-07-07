@@ -285,7 +285,7 @@ function displayBeaconList() {
                     + beacon.uuid + '<br />'
                     + 'Mj: ' + beacon.major + ' &nbsp; '
                     + 'Mn: ' + beacon.minor + ' &nbsp; '
-                    //+ 'Prox: ' + beacon.proximity + '<br />'
+//                    + 'Prox: ' + beacon.proximity + '<br />'
 //                    + 'Dist: ' + beacon.accuracy + '<br />'
 //                    + 'RSSI: ' + beacon.rssi + ' &nbsp; &nbsp; '
 //                    + 'RmX: ' + rM + '<br />'
@@ -297,8 +297,6 @@ function displayBeaconList() {
                     );
             $('#warning').remove();
             $('#found-beacons').append(element);
-
-
         }
 
     });
