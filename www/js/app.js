@@ -282,12 +282,12 @@ function displayBeaconList() {
             // Create tag to display beacon data.
             var element = $(
                     '<li><a onclick="ExhibitsLoadInfo(\''+beacon.uuid+'\',\''+beacon.minor+'\',\''+beacon.major+'\')">'
-                    + 'U:' + beacon.uuid + '<br />'
+                    + beacon.uuid + '<br />'
                     + 'Mj: ' + beacon.major + ' &nbsp; '
                     + 'Mn: ' + beacon.minor + ' &nbsp; '
                     //+ 'Prox: ' + beacon.proximity + '<br />'
-                    + 'Dist: ' + beacon.accuracy + '<br />'
-                    + 'RSSI: ' + beacon.rssi + ' &nbsp; &nbsp; '
+//                    + 'Dist: ' + beacon.accuracy + '<br />'
+//                    + 'RSSI: ' + beacon.rssi + ' &nbsp; &nbsp; '
 //                    + 'RmX: ' + rM + '<br />'
 //                    + 'Max major:' + majorMax + '<br/>'
 //                    + 'Max minor:' + minorMax + '<br/>'
