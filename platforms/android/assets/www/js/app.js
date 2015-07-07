@@ -1,24 +1,20 @@
-
-
-//alert("start");
-// Specify your beacon 128bit UUIDs here.
 var regions =
         [
             // Sample UUIDs for beacons in our lab.
-           // {uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E'},
+            // {uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E'},
         ];
 
 // Dictionary of beacons.
 var beacons = {};
 var scannedBeaconsArr = [];
-var avgArrayCount = 8;
+var avgArrayCount = 3;
+var aliveMaxCounter = 2;
 
 // Timer that displays list of beacons.
 var updateTimer = null;
 
 
-function initIndoorLocation()
-{
+function initIndoorLocation() {
     if (isMobile) {
         window.locationManager = cordova.plugins.locationManager;
         // Start tracking beacons!
@@ -27,19 +23,42 @@ function initIndoorLocation()
 
         //==========================   emulation for chrome  ============
         scannedBeaconsArr = [
-            {uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E', major: '14575', minor: '21386', rssi: -82, accuracy: 8.2 /*10*/},
+            {
+                uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E',
+                major: '14575',
+                minor: '21386',
+                aliveCounter: 0,
+                rssi: -82,
+                accuracy: 8.2 /*10*/
+
+            },
             {uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E', major: '46650', minor: '37051', rssi: -76, accuracy: 4.2},
             {uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E', major: '46609', minor: '33951', rssi: -62, accuracy: 7}
         ];
 
-
-        var beaconsWithRadiuses = buildBeaconsWithRadiusesArray(scannedBeaconsArr, existedBeaconsArr);
-        var realPosition = corelateResult(beaconsWithRadiuses);
-        //var realPosition = detectRealPosition(beaconsWithRadiuses);
-
         setInterval(function () {
-            updateIndoorMap(beaconsWithRadiuses, realPosition);
-        }, 4000);
+            var min = 0.3;
+            var max = 10;
+
+            for (var i in scannedBeaconsArr) {
+                var randomDelta = (Math.random() - 0.5) * 0.4;
+                var cr = scannedBeaconsArr[i].accuracy;
+                var rwd = cr + randomDelta;
+                if (rwd > max) {
+                    rwd = max;
+                }
+                if (rwd < min) {
+                    rwd = min;
+                }
+                scannedBeaconsArr[i].accuracy = rwd;
+            }
+            var beaconsWithRadiuses = buildBeaconsWithRadiusesArray(scannedBeaconsArr, existedBeaconsArr);
+            if (scannedBeaconsArr.length > 0 && existedBeaconsArr.length > 0) {
+                var realPosition = corelateResult(beaconsWithRadiuses);
+                //var realPosition = detectRealPosition(beaconsWithRadiuses);
+                updateIndoorMap(beaconsWithRadiuses, realPosition);
+            }
+        }, 210);
     }
 
     // Display refresh timer.
@@ -54,7 +73,6 @@ function stopIndoorLocation() {
 }
 
 
-
 //====utils
 function findBeaconInArr(scannedBeaconsArr, beacon) {
     var count = scannedBeaconsArr.length;
@@ -62,8 +80,7 @@ function findBeaconInArr(scannedBeaconsArr, beacon) {
 
     for (var i = 0; i < count; i++) {
         var currScannedBeacon = scannedBeaconsArr[i];
-        if ((beacon.uuid == currScannedBeacon.uuid) && (beacon.minor == currScannedBeacon.minor) && (beacon.major == currScannedBeacon.major))
-        {
+        if ((beacon.uuid == currScannedBeacon.uuid) && (beacon.minor == currScannedBeacon.minor) && (beacon.major == currScannedBeacon.major)) {
             return scannedBeaconsArr[i];
         }
     }
@@ -90,22 +107,22 @@ function avgFromArray(arr) {
 }
 
 
-
-
-function startScan()
-{
+function startScan() {
 
     // The delegate object holds the iBeacon callback functions
     // specified below.
     var delegate = new locationManager.Delegate();
     // Called continuously when ranging beacons.
 
-    delegate.didRangeBeaconsInRegion = function (pluginResult)
-    {
+    delegate.didRangeBeaconsInRegion = function (pluginResult) {
         var maxRSSI = -100;
-        var tempScannedBeakons = [];
-        for (var i in pluginResult.beacons)
-        {
+        //var tempScannedBeacons = [];
+
+        for (var i in scannedBeaconsArr) {
+            scannedBeaconsArr[i].aliveCounter++;
+        }
+
+        for (var i in pluginResult.beacons) {
 
 //           if(maxRSSI<pluginResult.beacons[i].rssi)
 //           {
@@ -126,17 +143,44 @@ function startScan()
                     relevantBeacon.avgArray.shift();
                 }
             } else {
-                relevantBeacon = {uuid: beacon.uuid, major: beacon.major, minor: beacon.minor,
-                    rssi: beacon.rssi, accuracy: 0, avgArray: []};
-
+                relevantBeacon = {
+                    uuid: beacon.uuid, major: beacon.major, minor: beacon.minor,
+                    rssi: beacon.rssi,
+                    accuracy: beacon.accuracy,
+                    avgAccuracy: beacon.accuracy,
+                    avgArray: [],
+                    aliveCounter: 0
+                };
+                scannedBeaconsArr.push(relevantBeacon);
             }
             relevantBeacon.avgArray.push(beacon.accuracy);
-            relevantBeacon.accuracy = avgFromArray(relevantBeacon.avgArray);
+            relevantBeacon.avgAccuracy = avgFromArray(relevantBeacon.avgArray);  // todo  maybe change to accuracy
+            relevantBeacon.accuracy = beacon.accuracy;
+            relevantBeacon.aliveCounter = 0;   // reset counter for founded beacon
 
-            tempScannedBeakons.push(relevantBeacon);
+
+
+            //tempScannedBeacons.push(relevantBeacon);
         }
 
-        scannedBeaconsArr = tempScannedBeakons;
+
+        // delete unactive beacons from array which limited max iteration
+        for (var i = scannedBeaconsArr.length - 1; i >= 0; i--) {
+            if (scannedBeaconsArr[i].aliveCounter >= aliveMaxCounter) {
+                scannedBeaconsArr.splice(i, 1);
+            }
+        }
+
+
+        // if beacon not scanned, but steal alive - add 1m radius
+        for (var i = scannedBeaconsArr.length - 1; i >= 0; i--) {
+            var scb = scannedBeaconsArr[i];
+            if (scb.aliveCounter != 0) {
+                scb.avgArray.shift();
+                scb.avgArray.push((scb.avgArray[scb.avgArray.length - 1]) + 1);
+                scb.avgAccuracy = avgFromArray(scb.avgArray);
+            }
+        }
 
 
         max = maxRSSI;
@@ -153,15 +197,13 @@ function startScan()
 
     // Called when starting to monitor a region.
     // (Not used in this example, included as a reference.)
-    delegate.didStartMonitoringForRegion = function (pluginResult)
-    {
+    delegate.didStartMonitoringForRegion = function (pluginResult) {
         //console.log('didStartMonitoringForRegion:' + JSON.stringify(pluginResult))
     };
 
     // Called when monitoring and the state of a region changes.
     // (Not used in this example, included as a reference.)
-    delegate.didDetermineStateForRegion = function (pluginResult)
-    {
+    delegate.didDetermineStateForRegion = function (pluginResult) {
         //console.log('didDetermineStateForRegion: ' + JSON.stringify(pluginResult))
     };
 
@@ -173,8 +215,7 @@ function startScan()
     locationManager.requestAlwaysAuthorization();
 
     // Start monitoring and ranging beacons.
-    for (var i in regions)
-    {
+    for (var i in regions) {
 //        var obj=regions[i];
 //        array.push(obj.rssi);
 //        array.sort(function(a,b){return a-b;});
@@ -199,46 +240,36 @@ function startScan()
     }
 
 
-
 }
 
 
-
-
-
-
-function displayBeaconList()
-{
+function displayBeaconList() {
     // Clear beacon list.
     $('#found-beacons').empty();
     $('#info').empty();
 
     var timeNow = Date.now();
 
-    var rM = -100;//min value of rssi
-//    var majorMax=0;//
-//    var minorMax=0;
-    var uuid = 0;//uuid start =0
+//    var rM = -100;//min value of rssi
+////    var majorMax=0;//
+////    var minorMax=0;
+//    var uuid = 0;//uuid start =0
     // Update beacon list.
-    $.each(beacons, function (key, beacon)
-    {
-        //The cycle find max value of rssi and get this uuid.
-        if (beacon.rssi > rM)
-        {
-            rM = beacon.rssi;
-//            majorMax=beacon.major;
-//            minorMax=beacon.minor;
-            uuid = beacon.uuid;
-        }
-    });
-    //function changeInformation
-    FindBeaconInDataBase(uuid);
-    $.each(beacons, function (key, beacon)
-    {
+//    $.each(beacons, function (key, beacon) {
+//        //The cycle find max value of rssi and get this uuid.
+//        if (beacon.rssi > rM) {
+//            rM = beacon.rssi;
+////            majorMax=beacon.major;
+////            minorMax=beacon.minor;
+//            uuid = beacon.uuid;
+//        }
+//    });
+//    //function changeInformation
+//    FindBeaconInDataBase(uuid);
+    $.each(beacons, function (key, beacon) {
 
         // Only show beacons that are updated during the last 60 seconds.
-        if (beacon.timeStamp + 60000 > timeNow)
-        {
+        if (beacon.timeStamp + 60000 > timeNow) {
             // Map the RSSI value to a width in percent for the indicator.
             var rssiWidth = 1; // Used when RSSI is zero or greater.
             if (beacon.rssi < -100) {
@@ -247,17 +278,17 @@ function displayBeaconList()
             else if (beacon.rssi < 0) {
                 rssiWidth = 100 + beacon.rssi;
             }
-
+            var str='vvvv';
             // Create tag to display beacon data.
             var element = $(
-                    '<li><a onclick=loadExhibit('+beacon.uuid,beacon.minor,beacon.major+')+>'
+                    '<li><a onclick="ExhibitsLoadInfo(\''+beacon.uuid+'\',\''+beacon.minor+'\',\''+beacon.major+'\')">'
                     + 'U:' + beacon.uuid + '<br />'
                     + 'Mj: ' + beacon.major + ' &nbsp; '
                     + 'Mn: ' + beacon.minor + ' &nbsp; '
                     //+ 'Prox: ' + beacon.proximity + '<br />'
                     + 'Dist: ' + beacon.accuracy + '<br />'
                     + 'RSSI: ' + beacon.rssi + ' &nbsp; &nbsp; '
-                    + 'RmX: ' + rM + '<br />'
+//                    + 'RmX: ' + rM + '<br />'
 //                    + 'Max major:' + majorMax + '<br/>'
 //                    + 'Max minor:' + minorMax + '<br/>'
 //                    + '<div style="background:rgb(255,128,64);height:20px;width:'
@@ -273,9 +304,7 @@ function displayBeaconList()
     });
 
 
-
 }
-
 
 
 var indoorMap = null;
@@ -290,7 +319,7 @@ function initIndoorMap() {
         if (result.error) {
             showErrorMessage(eMsg.cannotGetPosition + ' : ' + result.error);
             position = museumPosLatLng;
-        }else{
+        } else {
             position = result.position;
             console.log(' position.latitude : ' + (position.latitude).toFixed(10) + ';   position.longitude : ' + (position.longitude).toFixed(10));
         }
@@ -300,17 +329,12 @@ function initIndoorMap() {
         });
 
     }
-
-
-
-
     function drawMap(position) {
         var posLatlng = new google.maps.LatLng(position.latitude, position.longitude);
         var mapOptions = {
             zoom: 512,
             center: posLatlng
         };
-
         waitForLoadingMapsApi(function () {
             var _indoorMap = new google.maps.Map(document.getElementById('indoor-map'), mapOptions);
             indoorMap = _indoorMap;
@@ -361,7 +385,12 @@ function updateIndoorMap(beaconsWithRadiusesArr, userPosition) {
                     position: beaconPos,
                     map: indoorMap,
                     title: currBeacon.name,
-                    icon: markerImage
+                    icon: markerImage,
+                    label: currBeacon.name,
+                    //labelContent: currBeacon.name,
+                    //labelAnchor: new google.maps.Point(22, 0),
+                    //labelClass: "labels", // the CSS class for the label
+                    //labelStyle: {opacity: 0.75}
                 });
                 var circleOpts = {
                     strokeColor: '#FF0000',
@@ -389,10 +418,9 @@ function updateIndoorMap(beaconsWithRadiusesArr, userPosition) {
                 currBeaconOnMap.marker.setMap(null);
                 currBeaconOnMap.circle.setMap(null);
             }
-            ;
         }
 
-        if (userPosition) {
+        if (userPosition && !isNaN(userPosition.lat)) {
 
             var userPosLatLng = new google.maps.LatLng(userPosition.lat, userPosition.lng);
 
@@ -400,9 +428,12 @@ function updateIndoorMap(beaconsWithRadiusesArr, userPosition) {
                 userPosOnMap.avgRadius = userPosition.avgRadius;
                 userPosOnMap.circle.setRadius(userPosition.avgRadius);
                 userPosOnMap.circle.setCenter(userPosLatLng);
-                userPosOnMap.marker.setPosition(userPosLatLng);
-
-
+                //userPosOnMap.marker.setPosition(userPosLatLng);
+                var moveOpts = {duration: 500};
+                userPosOnMap.marker.animateTo(userPosLatLng, moveOpts);
+                indoorMap.setCenter(userPosLatLng);
+                //indoorMap.panTo(userPosLatLng);
+                //indoorMap.animateTo(userPosLatLng, moveOpts);
             } else {
                 var markerImage = new google.maps.MarkerImage(
                         'images/user_position.png',
@@ -436,19 +467,15 @@ function updateIndoorMap(beaconsWithRadiusesArr, userPosition) {
         }
 
 
-
-
     }
 }
-
 
 
 function findBeaconInMap(beaconsOnMap, beacon) {
 
     for (var i = 0; i < beaconsOnMap.length; i++) {
         var currScannedBeacon = beaconsOnMap[i];
-        if ((beacon.lat == currScannedBeacon.lat) && (beacon.lng == currScannedBeacon.lng))
-        {
+        if ((beacon.lat == currScannedBeacon.lat) && (beacon.lng == currScannedBeacon.lng)) {
             return beaconsOnMap[i];
         }
     }

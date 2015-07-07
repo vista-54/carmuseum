@@ -65,18 +65,12 @@ function readHost() {
 function loadContent(page) {
     if (page === 'location') {
         $('#content').load('1.html #location', function () {
-
-//                setTimeout(function () {
-
-//        createMap();
-//    }, 500);
-
+            googleMapLoadScript();
         });
 
     }
     if (page === 'exhibits') {
         $('#content').load('1.html #exhibits', function () {
-            //calculateAccuracy();//
             im.uuid = 0;
 //            im.p='ex';
 //            testAPIController();
@@ -95,10 +89,14 @@ function loadContent(page) {
         });
 
     }
-    if (page === 'navi') {
-        $('#content').load('index.html #menu', function () {
+    if (page === 'navigation') {
+        $('#content').load('1.html #navigation', function () {
 //            im.p='menu';
-
+            //calculateAccuracy();//
+            im.uuid = 0;
+//            im.p='ex';
+//            testAPIController();
+            initIndoorLocation();
 //            app.initialize();
 //            testAPIController();
 
@@ -122,7 +120,29 @@ function loadContent(page) {
 //        }
 //
 //}
-
+function ExhibitsLoadInfo(uuid, minor, major)
+{
+    var data = {};
+    data.uuid = uuid;
+    data.minor = minor;
+    data.major = major;
+    //alert(uuid+''+minor+''+major);
+    getData(data, callback);
+    function callback(result) {
+        
+        console.log(result);
+          $('#exhibits').load('1.html #Exinfo', function () {
+                      var frameHtml = '<iframe id="main-frame" src="' + result.data + '" ' +
+                    'height="' + 450 + '" ' +
+                    'name="main-frame" class="main-frame " ' +
+                    'scrolling="yes" ' +
+                    'wmode="Opaque" ' +
+                    'noresize="noresize" ' +
+                    '  </iframe>';
+            $("#exinformation").html(frameHtml);
+        });
+    }
+}
 function FindBeaconInDataBase($uuid) {
 
     if (im.uuid != $uuid) {
@@ -140,12 +160,12 @@ function FindBeaconInDataBase($uuid) {
         function response(result) {
             console.log(result);
             var frameHtml = '<iframe id="main-frame" src="' + result.data + '" ' +
-                'height="' + 450 + '" ' +
-                'name="main-frame" class="main-frame " ' +
-                'scrolling="yes" ' +
-                'wmode="Opaque" ' +
-                'noresize="noresize" ' +
-                '  </iframe>';
+                    'height="' + 450 + '" ' +
+                    'name="main-frame" class="main-frame " ' +
+                    'scrolling="yes" ' +
+                    'wmode="Opaque" ' +
+                    'noresize="noresize" ' +
+                    '  </iframe>';
 //            if (result.status.error) {
 ////            showErrorMessage(result.error);
 //                $.unblockUI();
@@ -281,7 +301,7 @@ function initializeGoogleMap() {
         var newPosition_lat = newPosition.lat();
         var newPosition_lng = newPosition.lng();
 
-        // crossing the 180° meridian and going the long way around the earth?
+        // crossing the 180ï¿½ meridian and going the long way around the earth?
         if (Math.abs(newPosition_lng - this.AT_startPosition_lng) > 180) {
             if (newPosition_lng > this.AT_startPosition_lng) {
                 newPosition_lng -= 360;
@@ -302,7 +322,7 @@ function initializeGoogleMap() {
 
             if (durationRatio < 1) {
                 var deltaPosition = new google.maps.LatLng(marker.AT_startPosition_lat + (newPosition_lat - marker.AT_startPosition_lat) * easingDurationRatio,
-                    marker.AT_startPosition_lng + (newPosition_lng - marker.AT_startPosition_lng) * easingDurationRatio);
+                        marker.AT_startPosition_lng + (newPosition_lng - marker.AT_startPosition_lng) * easingDurationRatio);
                 marker.setPosition(deltaPosition);
 
                 // use requestAnimationFrame if it exists on this browser. If not, use setTimeout with ~60 fps
@@ -373,7 +393,7 @@ function initializeGoogleMap() {
         var newPosition_lat = newPosition.lat();
         var newPosition_lng = newPosition.lng();
 
-        // crossing the 180° meridian and going the long way around the earth?
+        // crossing the 180ï¿½ meridian and going the long way around the earth?
         if (Math.abs(newPosition_lng - this.AT_startPosition_lng) > 180) {
             if (newPosition_lng > this.AT_startPosition_lng) {
                 newPosition_lng -= 360;
@@ -394,7 +414,7 @@ function initializeGoogleMap() {
 
             if (durationRatio < 1) {
                 var deltaPosition = new google.maps.LatLng(map.AT_startPosition_lat + (newPosition_lat - map.AT_startPosition_lat) * easingDurationRatio,
-                    map.AT_startPosition_lng + (newPosition_lng - map.AT_startPosition_lng) * easingDurationRatio);
+                        map.AT_startPosition_lng + (newPosition_lng - map.AT_startPosition_lng) * easingDurationRatio);
                 map.setCenter(deltaPosition);
 
                 // use requestAnimationFrame if it exists on this browser. If not, use setTimeout with ~60 fps
@@ -470,7 +490,7 @@ function waitForLoadingMapsApi(callback, inited) {
 function googleMapLoadScript() {
     setTimeout(function () {
         $.getScript('http://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true&' +
-            'callback=initializeGoogleMap');
+                'callback=initializeGoogleMap');
     }, 500);
 }
 
@@ -502,29 +522,29 @@ function getCurrentPosition(callback) {
 
     //if(! isDeviceReady() ){ return false;}
     navigator.geolocation.getCurrentPosition(
-        function (position) {
-            its.lastSavedCoords = position.coords;
-            var retObj = {status: {success: true}, position: position.coords};
-            while (its.callbacks.length > 0) {
-                var currCallback = its.callbacks.shift();
-                currCallback.call(null, retObj);
+            function (position) {
+                its.lastSavedCoords = position.coords;
+                var retObj = {status: {success: true}, position: position.coords};
+                while (its.callbacks.length > 0) {
+                    var currCallback = its.callbacks.shift();
+                    currCallback.call(null, retObj);
+                }
+                its.callbacks = [];
+                console.log("return geo coords Success");
+            },
+            function (error) {
+                var retObj = {status: {error: true}, error: error.message};
+                while (its.callbacks.length > 0) {
+                    var currCallback = its.callbacks.shift();
+                    currCallback.call(null, retObj);
+                }
+                console.log("Fail getting coords");
+            },
+            {
+                //enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 30000
             }
-            its.callbacks = [];
-            console.log("return geo coords Success");
-        },
-        function (error) {
-            var retObj = {status: {error: true}, error: error.message};
-            while (its.callbacks.length > 0) {
-                var currCallback = its.callbacks.shift();
-                currCallback.call(null, retObj);
-            }
-            console.log("Fail getting coords");
-        },
-        {
-            //enableHighAccuracy: true,
-            timeout: 15000,
-            maximumAge: 30000
-        }
     );
 }
 

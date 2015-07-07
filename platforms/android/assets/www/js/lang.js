@@ -1,6 +1,6 @@
 
 var eMsg = {
-    connectionError: 'Cannot connect to the server http://waiver.greensboroscience.org/api/login',
+    connectionError: 'Cannot connect to the server',
     urlNotFound: 'Requested url not found',
     serverError: 'Internal Server Error',
     ajaxAborted: 'Ajax request aborted',

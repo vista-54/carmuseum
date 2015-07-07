@@ -1,10 +1,8 @@
-//alert("start");
-// Specify your beacon 128bit UUIDs here.
 var regions =
-    [
-        // Sample UUIDs for beacons in our lab.
-        // {uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E'},
-    ];
+        [
+            // Sample UUIDs for beacons in our lab.
+            // {uuid: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E'},
+        ];
 
 // Dictionary of beacons.
 var beacons = {};
@@ -43,7 +41,7 @@ function initIndoorLocation() {
             var max = 10;
 
             for (var i in scannedBeaconsArr) {
-                var randomDelta = (Math.random() - 0.5) *0.4;
+                var randomDelta = (Math.random() - 0.5) * 0.4;
                 var cr = scannedBeaconsArr[i].accuracy;
                 var rwd = cr + randomDelta;
                 if (rwd > max) {
@@ -55,7 +53,7 @@ function initIndoorLocation() {
                 scannedBeaconsArr[i].accuracy = rwd;
             }
             var beaconsWithRadiuses = buildBeaconsWithRadiusesArray(scannedBeaconsArr, existedBeaconsArr);
-            if(scannedBeaconsArr.length>0 && existedBeaconsArr.length>0) {
+            if (scannedBeaconsArr.length > 0 && existedBeaconsArr.length > 0) {
                 var realPosition = corelateResult(beaconsWithRadiuses);
                 //var realPosition = detectRealPosition(beaconsWithRadiuses);
                 updateIndoorMap(beaconsWithRadiuses, realPosition);
@@ -120,7 +118,7 @@ function startScan() {
         var maxRSSI = -100;
         //var tempScannedBeacons = [];
 
-        for(var i in scannedBeaconsArr){
+        for (var i in scannedBeaconsArr) {
             scannedBeaconsArr[i].aliveCounter++;
         }
 
@@ -168,7 +166,7 @@ function startScan() {
 
         // delete unactive beacons from array which limited max iteration
         for (var i = scannedBeaconsArr.length - 1; i >= 0; i--) {
-            if(scannedBeaconsArr[i].aliveCounter  >= aliveMaxCounter){
+            if (scannedBeaconsArr[i].aliveCounter >= aliveMaxCounter) {
                 scannedBeaconsArr.splice(i, 1);
             }
         }
@@ -177,9 +175,9 @@ function startScan() {
         // if beacon not scanned, but steal alive - add 1m radius
         for (var i = scannedBeaconsArr.length - 1; i >= 0; i--) {
             var scb = scannedBeaconsArr[i];
-            if(scb.aliveCounter !=0 ){
+            if (scb.aliveCounter != 0) {
                 scb.avgArray.shift();
-                scb.avgArray.push( (scb.avgArray[scb.avgArray.length-1]) + 1 );
+                scb.avgArray.push((scb.avgArray[scb.avgArray.length - 1]) + 1);
                 scb.avgAccuracy = avgFromArray(scb.avgArray);
             }
         }
@@ -224,13 +222,13 @@ function startScan() {
 ////        a.sort(function(a,b){return a-b;});
 //        maxRSSI=array[0];
         var beaconRegion = new locationManager.BeaconRegion(
-            i + 1,
-            regions[i].uuid);
+                i + 1,
+                regions[i].uuid);
 
         // Start ranging.
         locationManager.startRangingBeaconsInRegion(beaconRegion)
-            .fail(console.error)
-            .done();
+                .fail(console.error)
+                .done();
 
         // Start monitoring.
         // (Not used in this example, included as a reference.)
@@ -252,22 +250,22 @@ function displayBeaconList() {
 
     var timeNow = Date.now();
 
-    var rM = -100;//min value of rssi
-//    var majorMax=0;//
-//    var minorMax=0;
-    var uuid = 0;//uuid start =0
+//    var rM = -100;//min value of rssi
+////    var majorMax=0;//
+////    var minorMax=0;
+//    var uuid = 0;//uuid start =0
     // Update beacon list.
-    $.each(beacons, function (key, beacon) {
-        //The cycle find max value of rssi and get this uuid.
-        if (beacon.rssi > rM) {
-            rM = beacon.rssi;
-//            majorMax=beacon.major;
-//            minorMax=beacon.minor;
-            uuid = beacon.uuid;
-        }
-    });
-    //function changeInformation
-    FindBeaconInDataBase(uuid);
+//    $.each(beacons, function (key, beacon) {
+//        //The cycle find max value of rssi and get this uuid.
+//        if (beacon.rssi > rM) {
+//            rM = beacon.rssi;
+////            majorMax=beacon.major;
+////            minorMax=beacon.minor;
+//            uuid = beacon.uuid;
+//        }
+//    });
+//    //function changeInformation
+//    FindBeaconInDataBase(uuid);
     $.each(beacons, function (key, beacon) {
 
         // Only show beacons that are updated during the last 60 seconds.
@@ -280,23 +278,23 @@ function displayBeaconList() {
             else if (beacon.rssi < 0) {
                 rssiWidth = 100 + beacon.rssi;
             }
-
+            var str='vvvv';
             // Create tag to display beacon data.
             var element = $(
-                '<li>'
-                + 'U:' + beacon.uuid + '<br />'
-                + 'Mj: ' + beacon.major + ' &nbsp; '
-                + 'Mn: ' + beacon.minor + ' &nbsp; '
+                    '<li><a onclick="ExhibitsLoadInfo(\''+beacon.uuid+'\',\''+beacon.minor+'\',\''+beacon.major+'\')">'
+                    + 'U:' + beacon.uuid + '<br />'
+                    + 'Mj: ' + beacon.major + ' &nbsp; '
+                    + 'Mn: ' + beacon.minor + ' &nbsp; '
                     //+ 'Prox: ' + beacon.proximity + '<br />'
-                + 'Dist: ' + beacon.accuracy + '<br />'
-                + 'RSSI: ' + beacon.rssi + ' &nbsp; &nbsp; '
-                + 'RmX: ' + rM + '<br />'
+                    + 'Dist: ' + beacon.accuracy + '<br />'
+                    + 'RSSI: ' + beacon.rssi + ' &nbsp; &nbsp; '
+//                    + 'RmX: ' + rM + '<br />'
 //                    + 'Max major:' + majorMax + '<br/>'
 //                    + 'Max minor:' + minorMax + '<br/>'
 //                    + '<div style="background:rgb(255,128,64);height:20px;width:'
 //                    + rssiWidth + '%;"></div>'
-                + '</li>'
-            );
+                    + '</a></li>'
+                    );
             $('#warning').remove();
             $('#found-beacons').append(element);
 
@@ -331,15 +329,12 @@ function initIndoorMap() {
         });
 
     }
-
-
     function drawMap(position) {
         var posLatlng = new google.maps.LatLng(position.latitude, position.longitude);
         var mapOptions = {
             zoom: 512,
             center: posLatlng
         };
-
         waitForLoadingMapsApi(function () {
             var _indoorMap = new google.maps.Map(document.getElementById('indoor-map'), mapOptions);
             indoorMap = _indoorMap;
@@ -380,11 +375,11 @@ function updateIndoorMap(beaconsWithRadiusesArr, userPosition) {
                 var beaconPos = new google.maps.LatLng(currBeacon.lat, currBeacon.lng);
 
                 var markerImage = new google.maps.MarkerImage(
-                    'images/beacon.png',
-                    new google.maps.Size(36, 36),
-                    new google.maps.Point(0, 0),
-                    new google.maps.Point(18, 18)
-                );
+                        'images/beacon.png',
+                        new google.maps.Size(36, 36),
+                        new google.maps.Point(0, 0),
+                        new google.maps.Point(18, 18)
+                        );
 
                 var marker = new google.maps.Marker({
                     position: beaconPos,
@@ -434,18 +429,18 @@ function updateIndoorMap(beaconsWithRadiusesArr, userPosition) {
                 userPosOnMap.circle.setRadius(userPosition.avgRadius);
                 userPosOnMap.circle.setCenter(userPosLatLng);
                 //userPosOnMap.marker.setPosition(userPosLatLng);
-                var moveOpts = {duration:500};
+                var moveOpts = {duration: 500};
                 userPosOnMap.marker.animateTo(userPosLatLng, moveOpts);
                 indoorMap.setCenter(userPosLatLng);
                 //indoorMap.panTo(userPosLatLng);
                 //indoorMap.animateTo(userPosLatLng, moveOpts);
             } else {
                 var markerImage = new google.maps.MarkerImage(
-                    'images/user_position.png',
-                    new google.maps.Size(40, 40),
-                    new google.maps.Point(0, 0),
-                    new google.maps.Point(20, 20)
-                );
+                        'images/user_position.png',
+                        new google.maps.Size(40, 40),
+                        new google.maps.Point(0, 0),
+                        new google.maps.Point(20, 20)
+                        );
 
                 var marker = new google.maps.Marker({
                     position: userPosLatLng,
